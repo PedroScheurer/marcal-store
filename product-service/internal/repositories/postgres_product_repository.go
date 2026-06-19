@@ -11,40 +11,36 @@ import (
 	"github.com/PedroScheurer/product-service/internal/entities"
 )
 
-// postgresProductRepository é a implementação concreta de ProductRepository
-// usando sqlx sobre Postgres. Equivalente, na prática, ao que o Spring Data
-// JPA gera por trás da interface ProductRepository.
 type postgresProductRepository struct {
 	db *sqlx.DB
 }
 
-// NewProductRepository cria um ProductRepository baseado em Postgres.
 func NewProductRepository(db *sqlx.DB) ProductRepository {
 	return &postgresProductRepository{db: db}
 }
 
-// allowedSortColumns é a whitelist de colunas que podem ser usadas no
-// ORDER BY. O Pageable do Spring aceita o nome do campo Java diretamente
-// (ex.: "description") vindo da query string, então sem essa validação
-// estaríamos abrindo a porta para SQL injection via parâmetro de sort.
+// allowedSortColumns é a whitelist de colunas permitidas no ORDER BY,
+// evitando SQL injection via parâmetro de ordenação.
 var allowedSortColumns = map[string]string{
 	"id":          "id",
+	"name":        "name",
+	"instructor":  "instructor",
 	"description": "description",
-	"brand":       "brand",
-	"model":       "model",
-	"currency":    "currency",
+	"workload":    "workload",
+	"modules":     "modules",
 	"price":       "price",
+	"currency":    "currency",
 }
+
+const selectColumns = `id, name, instructor, image_url, video_url, description, workload, modules, price, currency`
 
 func (r *postgresProductRepository) FindByID(ctx context.Context, id int64) (*entities.ProductEntity, error) {
 	var product entities.ProductEntity
 
-	query := `SELECT id, description, brand, model, currency, price
-	          FROM tb_product WHERE id = $1`
+	query := `SELECT ` + selectColumns + ` FROM tb_product WHERE id = $1`
 
 	err := r.db.GetContext(ctx, &product, query, id)
 	if errors.Is(err, sql.ErrNoRows) {
-		// Equivalente ao Optional vazio do Java: quem chama decide o que fazer.
 		return nil, nil
 	}
 	if err != nil {
@@ -57,7 +53,7 @@ func (r *postgresProductRepository) FindByID(ctx context.Context, id int64) (*en
 func (r *postgresProductRepository) FindAllPaged(ctx context.Context, page, size int, sortBy, sortDir string) ([]entities.ProductEntity, int64, error) {
 	column, ok := allowedSortColumns[sortBy]
 	if !ok {
-		column = "description" // mesmo default usado no @PageableDefault do Java
+		column = "name"
 	}
 
 	direction := "ASC"
@@ -71,11 +67,10 @@ func (r *postgresProductRepository) FindAllPaged(ctx context.Context, page, size
 	}
 
 	offset := page * size
-
-	// column/direction vêm de uma whitelist fixa acima, nunca diretamente
-	// do usuário, então a interpolação aqui é segura.
-	query := fmt.Sprintf(`SELECT id, description, brand, model, currency, price, image_url, video_url
-	          FROM tb_product ORDER BY %s %s LIMIT $1 OFFSET $2`, column, direction)
+	query := fmt.Sprintf(
+		`SELECT `+selectColumns+` FROM tb_product ORDER BY %s %s LIMIT $1 OFFSET $2`,
+		column, direction,
+	)
 
 	var products []entities.ProductEntity
 	if err := r.db.SelectContext(ctx, &products, query, size, offset); err != nil {
@@ -87,13 +82,10 @@ func (r *postgresProductRepository) FindAllPaged(ctx context.Context, page, size
 
 func (r *postgresProductRepository) ExistsByID(ctx context.Context, id int64) (bool, error) {
 	var exists bool
-
-	query := `SELECT EXISTS(SELECT 1 FROM tb_product WHERE id = $1)`
-
-	if err := r.db.GetContext(ctx, &exists, query, id); err != nil {
+	err := r.db.GetContext(ctx, &exists, `SELECT EXISTS(SELECT 1 FROM tb_product WHERE id = $1)`, id)
+	if err != nil {
 		return false, fmt.Errorf("check product exists id %d: %w", id, err)
 	}
-
 	return exists, nil
 }
 
@@ -105,12 +97,14 @@ func (r *postgresProductRepository) Save(ctx context.Context, product *entities.
 }
 
 func (r *postgresProductRepository) insert(ctx context.Context, product *entities.ProductEntity) (*entities.ProductEntity, error) {
-	query := `INSERT INTO tb_product (description, brand, model, currency, price, image_url, video_url)
-	          VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`
+	query := `
+		INSERT INTO tb_product (name, instructor, image_url, video_url, description, workload, modules, price, currency)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		RETURNING id`
 
 	err := r.db.QueryRowContext(ctx, query,
-		product.Description, product.Brand, product.Model,
-		product.Currency, product.Price, product.ImageUrl, product.VideoUrl,
+		product.Name, product.Instructor, product.ImageURL, product.VideoURL,
+		product.Description, product.Workload, product.Modules, product.Price, product.Currency,
 	).Scan(&product.ID)
 	if err != nil {
 		return nil, fmt.Errorf("insert product: %w", err)
@@ -120,13 +114,16 @@ func (r *postgresProductRepository) insert(ctx context.Context, product *entitie
 }
 
 func (r *postgresProductRepository) update(ctx context.Context, product *entities.ProductEntity) (*entities.ProductEntity, error) {
-	query := `UPDATE tb_product
-	          SET description = $1, brand = $2, model = $3, currency = $4, price = $5, image_url = $6, video_url = $7
-	          WHERE id = $8`
+	query := `
+		UPDATE tb_product
+		SET name = $1, instructor = $2, image_url = $3, video_url = $4,
+		    description = $5, workload = $6, modules = $7, price = $8, currency = $9
+		WHERE id = $10`
 
 	_, err := r.db.ExecContext(ctx, query,
-		product.Description, product.Brand, product.Model,
-		product.Currency, product.Price, product.ImageUrl, product.VideoUrl, product.ID,
+		product.Name, product.Instructor, product.ImageURL, product.VideoURL,
+		product.Description, product.Workload, product.Modules, product.Price, product.Currency,
+		product.ID,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("update product id %d: %w", product.ID, err)

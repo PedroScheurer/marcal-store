@@ -5,10 +5,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/PedroScheurer/product-service/internal/infra"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/PedroScheurer/product-service/internal/config"
 	"github.com/PedroScheurer/product-service/internal/controllers"
@@ -37,9 +39,8 @@ func main() {
 	// Equivalente ao spring.cache.caffeine.spec=maximumSize=500,expireAfterWrite=15s
 	cacheService := services.NewCacheService(500, 15*time.Second)
 
-	// TODO: substituir pelo client HTTP real do currency-service na
-	// próxima etapa (com descoberta via Eureka, retry e circuit breaker).
-	currencyClient := services.NewNoopCurrencyClient()
+	currencyServiceURL := "http://localhost:8081"
+	currencyClient := services.NewHTTPCurrencyClient(currencyServiceURL, 5*time.Second)
 
 	currencyConversionService := services.NewCurrencyConversionService(currencyClient, cacheService)
 	productService := services.NewProductService(productRepository, currencyConversionService, cfg.ServerPort)
@@ -55,6 +56,12 @@ func main() {
 
 	productController.RegisterRoutes(router)
 	wsProductController.RegisterRoutes(router)
+
+	router.Route("/management", func(r chi.Router) {
+		r.Handle("/health", infra.NewHealthHandler(db))
+		r.Get("/info", infra.NewInfoHandler())
+		r.Handle("/metrics", promhttp.Handler())
+	})
 
 	addr := ":" + cfg.ServerPort
 	log.Printf("product-service listening on %s", addr)

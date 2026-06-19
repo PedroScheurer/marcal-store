@@ -1,14 +1,16 @@
 package dtos
 
-// ProductOutDTO é o equivalente Go do record Java ProductOutDTO,
-// usado como resposta de criação/alteração de produto (sem dados de conversão).
+// ProductOutDTO é a resposta de criação/atualização de um produto,
+// sem dados de conversão de moeda.
 type ProductOutDTO struct {
 	ID          int64   `json:"id"`
+	Name        string  `json:"name"`
+	Instructor  string  `json:"instructor"`
+	ImageURL    string  `json:"imageUrl"`
+	VideoURL    string  `json:"videoUrl"`
 	Description string  `json:"description"`
-	Brand       string  `json:"brand"`
-	Model       string  `json:"model"`
+	Workload    int     `json:"workload"`
+	Modules     int     `json:"modules"`
 	Price       float64 `json:"price"`
 	Currency    string  `json:"currency"`
-	ImageUrl    string  `json:"imageUrl"`
-	VideoUrl    string  `json:"videoUrl"`
 }

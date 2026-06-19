@@ -1,13 +1,14 @@
 package dtos
 
-// ProductInDTO é o equivalente Go do record Java ProductInDTO,
-// usado como payload de entrada para criação de produto (POST).
+// ProductInDTO é o payload de entrada para criação de um produto (POST).
 type ProductInDTO struct {
+	Name        string  `json:"name"`
+	Instructor  string  `json:"instructor"`
+	ImageURL    string  `json:"imageUrl"`
+	VideoURL    string  `json:"videoUrl"`
 	Description string  `json:"description"`
-	Brand       string  `json:"brand"`
-	Model       string  `json:"model"`
-	Currency    string  `json:"currency"`
+	Workload    int     `json:"workload"`
+	Modules     int     `json:"modules"`
 	Price       float64 `json:"price"`
-	ImageUrl    string  `json:"imageUrl"`
-	VideoUrl    string  `json:"videoUrl"`
+	Currency    string  `json:"currency"`
 }
