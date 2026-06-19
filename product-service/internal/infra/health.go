@@ -15,7 +15,7 @@ func NewHealthHandler(db *sqlx.DB) http.Handler {
 	h, _ := health.New(
 		health.WithComponent(health.Component{
 			Name:    "product-service",
-			Version: "1.0.0",
+			Version: "2.0.0",
 		}),
 		health.WithSystemInfo(), // Inclui uso de memória e tempo de atividade (uptime)
 	)

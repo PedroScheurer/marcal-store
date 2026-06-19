@@ -32,6 +32,11 @@ func main() {
 	}
 	defer db.Close()
 
+	// --- Executar Migrations ---
+	if err := infra.RunMigrations(cfg.PostgresMigrationUrl()); err != nil {
+		log.Fatalf("failed to run migrations: %v", err)
+	}
+
 	// --- Camada de dados ---
 	productRepository := repositories.NewProductRepository(db)
 
