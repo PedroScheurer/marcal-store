@@ -1,4 +1,6 @@
-package services
+package clients
+
+import "context"
 
 // CurrencyResponse é o equivalente Go do record Java CurrencyResponse,
 // que representa o corpo de resposta do endpoint /currency/convert
@@ -30,5 +32,5 @@ type CurrencyResponse struct {
 // fallback do Java), e (nil, error) quando deve propagar uma falha real
 // (equivalente ao `throw new ExternalServiceException(...)`).
 type CurrencyClient interface {
-	GetCurrency(source, target string) (*CurrencyResponse, error)
+	GetCurrency(ctx context.Context, source, target string) (*CurrencyResponse, error)
 }

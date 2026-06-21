@@ -1,9 +1,11 @@
 package services
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
+	"github.com/PedroScheurer/product-service/internal/clients"
 	"github.com/PedroScheurer/product-service/internal/dtos"
 	"github.com/PedroScheurer/product-service/internal/entities"
 )
@@ -18,11 +20,11 @@ const (
 // produto, consultando o cache antes de chamar o currency-service via
 // CurrencyClient, e atualizando o cache com o resultado.
 type CurrencyConversionService struct {
-	currencyClient CurrencyClient
+	currencyClient clients.CurrencyClient
 	cacheService   *CacheService
 }
 
-func NewCurrencyConversionService(currencyClient CurrencyClient, cacheService *CacheService) *CurrencyConversionService {
+func NewCurrencyConversionService(currencyClient clients.CurrencyClient, cacheService *CacheService) *CurrencyConversionService {
 	return &CurrencyConversionService{
 		currencyClient: currencyClient,
 		cacheService:   cacheService,
@@ -30,7 +32,7 @@ func NewCurrencyConversionService(currencyClient CurrencyClient, cacheService *C
 }
 
 // Convert é o equivalente a CurrencyConversionService.convert(product, targetCurrency, port).
-func (s *CurrencyConversionService) Convert(product *entities.ProductEntity, targetCurrency, port string) dtos.ConversionResult {
+func (s *CurrencyConversionService) Convert(ctx context.Context, product *entities.ProductEntity, targetCurrency, port string) dtos.ConversionResult {
 	environment := "Product-service running on Port: " + port
 
 	if isSameCurrency(product.Currency, targetCurrency) {
@@ -49,7 +51,7 @@ func (s *CurrencyConversionService) Convert(product *entities.ProductEntity, tar
 		}
 	}
 
-	currency, err := s.currencyClient.GetCurrency(product.Currency, targetCurrency)
+	currency, err := s.currencyClient.GetCurrency(ctx, product.Currency, targetCurrency)
 	if err != nil || currency == nil {
 		return dtos.ConversionResult{
 			ConvertedPrice: fallbackPrice,

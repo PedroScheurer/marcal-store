@@ -1,6 +1,7 @@
-package services
+package clients
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -16,29 +17,36 @@ import (
 // HTTPCurrencyClient é a implementação real da interface CurrencyClient.
 // Faz a ponte via HTTP com o microsserviço "currency-service".
 type HTTPCurrencyClient struct {
-	baseURL    string
+	discovery  *ServiceDiscovery
 	httpClient *http.Client
 	cb         *gobreaker.CircuitBreaker
 }
 
 // NewHTTPCurrencyClient inicializa o cliente HTTP configurando o Circuit Breaker.
 // A baseURL pode ser injetada via variável de ambiente ou resolvida dinamicamente (ex: Eureka).
-func NewHTTPCurrencyClient(baseURL string, timeout time.Duration) *HTTPCurrencyClient {
+func NewHTTPCurrencyClient(discovery *ServiceDiscovery, timeout time.Duration) *HTTPCurrencyClient {
 	// Configuração do Circuit Breaker equivalente ao Resilience4j do Java
 	cbSettings := gobreaker.Settings{
 		Name:        "CurrencyClientCircuitBreaker",
-		MaxRequests: 3,                // Número de requisições permitidas no estado Half-Open
-		Interval:    10 * time.Second, // Tempo para limpar as estatísticas no estado Closed
-		Timeout:     15 * time.Second, // Quanto tempo o circuito fica Open antes de tentar ir para Half-Open
+		MaxRequests: 3,
+		Interval:    10 * time.Second,
+		Timeout:     15 * time.Second,
 		ReadyToTrip: func(counts gobreaker.Counts) bool {
-			// Tripar o circuito se houver pelo menos 5 requisições e a taxa de falha for maior que 50%
 			failureRatio := float64(counts.TotalFailures) / float64(counts.Requests)
 			return counts.Requests >= 5 && failureRatio > 0.5
+		},
+		IsSuccessful: func(err error) bool {
+			// 404 é erro de negócio (moeda/par não suportado), não falha de
+			// infraestrutura — não deve contar para abrir o circuito.
+			if errors.Is(err, ErrCurrencyNotFound) {
+				return true
+			}
+			return err == nil
 		},
 	}
 
 	return &HTTPCurrencyClient{
-		baseURL: baseURL,
+		discovery: discovery,
 		httpClient: &http.Client{
 			Timeout: timeout,
 		},
@@ -47,7 +55,7 @@ func NewHTTPCurrencyClient(baseURL string, timeout time.Duration) *HTTPCurrencyC
 }
 
 // GetCurrency executa a chamada HTTP protegida por uma política de Retry e Circuit Breaker.
-func (c *HTTPCurrencyClient) GetCurrency(source, target string) (*CurrencyResponse, error) {
+func (c *HTTPCurrencyClient) GetCurrency(ctx context.Context, source, target string) (*CurrencyResponse, error) {
 	var response *CurrencyResponse
 
 	// 1. Aplica a política de Retry (Equivalente ao @Retry(name = "Retry_CurrencyClient_getCurrency"))
@@ -55,7 +63,7 @@ func (c *HTTPCurrencyClient) GetCurrency(source, target string) (*CurrencyRespon
 		func() error {
 			// 2. Aplica o Circuit Breaker envolvendo a chamada de rede real
 			res, cbErr := c.cb.Execute(func() (interface{}, error) {
-				return c.doHTTPRequest(source, target)
+				return c.doHTTPRequest(ctx, source, target)
 			})
 
 			if cbErr != nil {
@@ -65,10 +73,16 @@ func (c *HTTPCurrencyClient) GetCurrency(source, target string) (*CurrencyRespon
 			response = res.(*CurrencyResponse)
 			return nil
 		},
+		retry.Context(ctx),
 		retry.Attempts(3),                   // 3 tentativas no total
 		retry.Delay(100*time.Millisecond),   // Delay inicial entre retries
 		retry.DelayType(retry.BackOffDelay), // Backoff exponencial para poupar o servidor destino
 		retry.LastErrorOnly(true),
+		retry.RetryIf(func(err error) bool {
+			// Erro de negócio (moeda/par não suportado) não se resolve
+			// tentando de novo — só erros de infraestrutura justificam retry.
+			return !errors.Is(err, ErrCurrencyNotFound)
+		}),
 	)
 
 	if err != nil {
@@ -87,9 +101,14 @@ func (c *HTTPCurrencyClient) GetCurrency(source, target string) (*CurrencyRespon
 }
 
 // doHTTPRequest realiza o envio do pacote HTTP de fato e decodifica o payload JSON.
-func (c *HTTPCurrencyClient) doHTTPRequest(source, target string) (*CurrencyResponse, error) {
+func (c *HTTPCurrencyClient) doHTTPRequest(ctx context.Context, source, target string) (*CurrencyResponse, error) {
 	// 1. Constrói e sanitiza a URL com Query Parameters (?source=USD&target=BRL)
-	endpoint, err := url.Parse(fmt.Sprintf("%s/currency/convert", c.baseURL))
+	baseURL, err := c.discovery.ResolveURL(ctx, "currency-service")
+	if err != nil {
+		return nil, fmt.Errorf("resolve currency-service: %w", err)
+	}
+
+	endpoint, err := url.Parse(fmt.Sprintf("%s/currency/convert", baseURL))
 	if err != nil {
 		return nil, fmt.Errorf("invalid base url: %w", err)
 	}
@@ -100,7 +119,7 @@ func (c *HTTPCurrencyClient) doHTTPRequest(source, target string) (*CurrencyResp
 	endpoint.RawQuery = queryParams.Encode()
 
 	// 2. Cria a requisição HTTP GET
-	req, err := http.NewRequest(http.MethodGet, endpoint.String(), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, endpoint.String(), nil)
 	if err != nil {
 		return nil, fmt.Errorf("failed to create request: %w", err)
 	}
@@ -117,10 +136,9 @@ func (c *HTTPCurrencyClient) doHTTPRequest(source, target string) (*CurrencyResp
 	}()
 
 	// 4. Validação do Status Code de Resposta
+	var ErrCurrencyNotFound = errors.New("currency mapping not found")
 	if resp.StatusCode == http.StatusNotFound {
-		// Se for 404 (equivalente ao FeignException.NotFound do Java), você pode decidir propagar
-		// ou engolir direto aqui. De acordo com o fluxo padrão:
-		return nil, fmt.Errorf("currency mapping not found: %s to %s", source, target)
+		return nil, fmt.Errorf("%w: %s to %s", ErrCurrencyNotFound, source, target)
 	}
 
 	if resp.StatusCode != http.StatusOK {

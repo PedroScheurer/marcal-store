@@ -37,7 +37,7 @@ func (s *ProductService) FindByID(ctx context.Context, id int64, targetCurrency 
 		return nil, apperrors.NewProductNotFoundError("Produto não encontrado")
 	}
 
-	conversionResult := s.currencyConversionService.Convert(product, targetCurrency, s.port)
+	conversionResult := s.currencyConversionService.Convert(ctx, product, targetCurrency, s.port)
 
 	return toProductDTO(product, &conversionResult, &targetCurrency), nil
 }
@@ -65,7 +65,7 @@ func (s *ProductService) FindProductsPaged(ctx context.Context, targetCurrency s
 	content := make([]dtos.ProductDTO, 0, len(products))
 	for i := range products {
 		product := products[i]
-		conversionResult := s.currencyConversionService.Convert(&product, targetCurrency, s.port)
+		conversionResult := s.currencyConversionService.Convert(ctx, &product, targetCurrency, s.port)
 		content = append(content, *toProductDTO(&product, &conversionResult, &targetCurrency))
 	}
 

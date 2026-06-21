@@ -5,26 +5,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a34d50d-6b16-4b0a-917a-c8bbd28d7b03" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/product-service/internal/infra/health.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/product-service/internal/infra/info.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/product-service/internal/services/http_currency_client.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/product-service/internal/clients/errors.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/product-service/internal/clients/eureka_client.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/product-service/internal/clients/eureka_payload.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/product-service/internal/clients/eureka_query_response.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/product-service/internal/clients/http_currency_client_test.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/product-service/internal/clients/service_discovery.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/data_source_mapping.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/product-service/cmd/product-service/main.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/cmd/product-service/main.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/db_migration/V1__CreateTableTbProduct.sql" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/db_migration/V1__CreateTableTbProduct.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/db_migration/V2__PopulateTableTbProduct.sql" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/db_migration/V2__PopulateTableTbProduct.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/db_migration/V3__AlterIdTypeTbProduct.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/go.mod" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/internal/dtos/product_dto.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/dtos/product_dto.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/internal/dtos/product_in_dto.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/dtos/product_in_dto.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/internal/dtos/product_out_dto.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/dtos/product_out_dto.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/internal/dtos/product_update_in_dto.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/dtos/product_update_in_dto.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/internal/entities/product_entity.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/entities/product_entity.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/internal/repositories/postgres_product_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/repositories/postgres_product_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/internal/repositories/product_repository.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/repositories/product_repository.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/internal/services/noop_currency_client.go" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/internal/config/config.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/config/config.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/internal/services/currency_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/clients/currency_client.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/internal/services/currency_conversion_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/services/currency_conversion_service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/internal/services/currency_conversion_service_test.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/services/currency_conversion_service_test.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/internal/services/http_currency_client.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/clients/http_currency_client.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/product-service/internal/services/product_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/services/product_service.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/internal/services/ws_product_service.go" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/internal/services/ws_product_service.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -32,7 +28,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="43" />
+    <option name="cachedIndexableFilesCount" value="56" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -45,71 +41,71 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="KubernetesApiPersistence"><![CDATA[{}]]></component>
-  <component name="KubernetesApiProvider"><![CDATA[{
-  "isMigrated": true
-}]]></component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
   <component name="McpProjectServerCommands">
     <commands />
     <urls />
   </component>
   <component name="NextEditCompletionFeaturesState">
     <decayedCancelled>
-      <entry key="MS100" value="1.0045120525079883" />
-      <entry key="MS500" value="1.5217433853316589" />
-      <entry key="S2" value="3.1589938094988526" />
-      <entry key="S5" value="4.164100551956972" />
-      <entry key="S10" value="4.874835056323407" />
-      <entry key="S30" value="5.950888212847666" />
-      <entry key="S60" value="6.409615627966305" />
-      <entry key="M2" value="6.6960620356488985" />
-      <entry key="M5" value="7.1688659469235265" />
-      <entry key="M10" value="7.944539066237059" />
-      <entry key="M15" value="8.660726670263028" />
-      <entry key="M30" value="10.509768167642378" />
-      <entry key="H1" value="12.693565323455164" />
-      <entry key="H2" value="14.473823213152048" />
-      <entry key="H4" value="15.625253914652331" />
-      <entry key="D1" value="16.753496861265887" />
-      <entry key="W1" value="16.96433286560528" />
+      <entry key="MS100" value="7.145293776158207E-14" />
+      <entry key="MS500" value="0.0023485727517542528" />
+      <entry key="S2" value="0.2201410353037162" />
+      <entry key="S5" value="0.5459542436824903" />
+      <entry key="S10" value="0.7523478900311965" />
+      <entry key="S30" value="1.4672625864343756" />
+      <entry key="S60" value="2.58542727077192" />
+      <entry key="M2" value="3.9399500525066267" />
+      <entry key="M5" value="6.067026948306493" />
+      <entry key="M10" value="9.294984873574519" />
+      <entry key="M15" value="13.275899318249175" />
+      <entry key="M30" value="24.555564833602734" />
+      <entry key="H1" value="38.311462251635035" />
+      <entry key="H2" value="50.07883028923824" />
+      <entry key="H4" value="58.05091367605962" />
+      <entry key="D1" value="66.17950129961869" />
+      <entry key="W1" value="67.73557055406029" />
     </decayedCancelled>
     <decayedSelected>
-      <entry key="MS100" value="1.5873648922491985E-19" />
-      <entry key="MS500" value="1.7399906931094984E-4" />
-      <entry key="S2" value="0.14634422475881162" />
-      <entry key="S5" value="0.7983939772565413" />
-      <entry key="S10" value="1.5167314421721967" />
-      <entry key="S30" value="2.379534544760457" />
-      <entry key="S60" value="2.6703965502095346" />
-      <entry key="M2" value="2.8300315564279783" />
-      <entry key="M5" value="2.9312701060469157" />
-      <entry key="M10" value="2.99805557104617" />
-      <entry key="M15" value="3.106100170585226" />
-      <entry key="M30" value="3.497024020901428" />
-      <entry key="H1" value="4.002812336009716" />
-      <entry key="H2" value="4.41739635791999" />
-      <entry key="H4" value="4.683957251608578" />
-      <entry key="D1" value="4.943517785733031" />
-      <entry key="W1" value="4.991832570368037" />
+      <entry key="MS100" value="1.0" />
+      <entry key="MS500" value="1.0" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0000002067226779" />
+      <entry key="S10" value="1.0004546676583865" />
+      <entry key="S30" value="1.0771469971138137" />
+      <entry key="S60" value="1.3056888964704105" />
+      <entry key="M2" value="1.877513631186853" />
+      <entry key="M5" value="4.180607600538989" />
+      <entry key="M10" value="8.848182082111094" />
+      <entry key="M15" value="13.724084426955226" />
+      <entry key="M30" value="24.971124634256498" />
+      <entry key="H1" value="36.2440992548387" />
+      <entry key="H2" value="44.64751637128307" />
+      <entry key="H4" value="49.87917184248619" />
+      <entry key="D1" value="54.90993283063945" />
+      <entry key="W1" value="55.84244206433338" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.963621822323631" />
-      <entry key="MS500" value="1.509114664896006" />
-      <entry key="S2" value="3.2144677288687875" />
-      <entry key="S5" value="4.7604843990576615" />
-      <entry key="S10" value="6.195082985000451" />
-      <entry key="S30" value="8.223629181045201" />
-      <entry key="S60" value="9.019230498858109" />
-      <entry key="M2" value="9.493628735188999" />
-      <entry key="M5" value="10.086609878812485" />
-      <entry key="M10" value="10.93551573617933" />
-      <entry key="M15" value="11.761576394659567" />
-      <entry key="M30" value="14.003014841724836" />
-      <entry key="H1" value="16.69366181480112" />
-      <entry key="H2" value="18.88950393804492" />
-      <entry key="H4" value="20.30823512747546" />
-      <entry key="D1" value="21.696832451296412" />
-      <entry key="W1" value="21.95613888412333" />
+      <entry key="MS100" value="2.3778215999153746E-5" />
+      <entry key="MS500" value="0.1212342370142745" />
+      <entry key="S2" value="0.8066864350604757" />
+      <entry key="S5" value="1.3534746640844926" />
+      <entry key="S10" value="1.6506475500527729" />
+      <entry key="S30" value="2.493597500990984" />
+      <entry key="S60" value="3.8469975142519663" />
+      <entry key="M2" value="5.779315427188927" />
+      <entry key="M5" value="10.210718019617486" />
+      <entry key="M10" value="18.103998945052908" />
+      <entry key="M15" value="26.958699288984317" />
+      <entry key="M30" value="49.48769333365993" />
+      <entry key="H1" value="74.5264917324023" />
+      <entry key="H2" value="94.7081179549328" />
+      <entry key="H4" value="107.91978990275405" />
+      <entry key="D1" value="121.08752472717997" />
+      <entry key="W1" value="123.57773465688132" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -125,6 +121,9 @@
   "keyToString": {
     "DefaultGoTemplateProperty": "Go File",
     "Go Build.go build github.com/PedroScheurer/product-service/cmd/product-service.executor": "Run",
+    "Go Test.TestConvert_SameCurrency_ReturnsOriginalPrice in github.com/PedroScheurer/product-service/internal/services.executor": "Run",
+    "Go Test.go test github.com/PedroScheurer/product-service/internal/clients.executor": "Run",
+    "Go Test.gobench github.com/PedroScheurer/product-service/internal/clients.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.GoLinterPluginOnboardingV2": "true",
     "RunOnceActivity.GoLinterPluginStorageMigration": "true",
@@ -152,7 +151,12 @@
     ]
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\pedro\faculdade\3_semestre\marcal-store\product-service\internal\clients" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Go Build.go build github.com/PedroScheurer/product-service/cmd/product-service">
     <configuration name="go build github.com/PedroScheurer/product-service/cmd/product-service" type="GoApplicationRunConfiguration" factoryName="Go Application" nameIsGenerated="true">
       <module name="marcal-store" />
       <working_directory value="$PROJECT_DIR$/product-service" />
@@ -166,6 +170,35 @@
       <auto_managed_config_id value="$PROJECT_DIR$/product-service/cmd/product-service" />
       <method v="2" />
     </configuration>
+    <configuration name="TestConvert_SameCurrency_ReturnsOriginalPrice in github.com/PedroScheurer/product-service/internal/services" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="marcal-store" />
+      <working_directory value="$PROJECT_DIR$/product-service/internal/services" />
+      <root_directory value="$PROJECT_DIR$/product-service" />
+      <kind value="PACKAGE" />
+      <package value="github.com/PedroScheurer/product-service/internal/services" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <pattern value="^\QTestConvert_SameCurrency_ReturnsOriginalPrice\E$" />
+      <method v="2" />
+    </configuration>
+    <configuration name="go test github.com/PedroScheurer/product-service/internal/clients" type="GoTestRunConfiguration" factoryName="Go Test" temporary="true" nameIsGenerated="true">
+      <module name="marcal-store" />
+      <working_directory value="$PROJECT_DIR$/product-service/internal/clients" />
+      <root_directory value="$PROJECT_DIR$/product-service" />
+      <kind value="PACKAGE" />
+      <package value="github.com/PedroScheurer/product-service/internal/clients" />
+      <directory value="$PROJECT_DIR$" />
+      <filePath value="$PROJECT_DIR$" />
+      <framework value="gotest" />
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Go Test.go test github.com/PedroScheurer/product-service/internal/clients" />
+        <item itemvalue="Go Test.TestConvert_SameCurrency_ReturnsOriginalPrice in github.com/PedroScheurer/product-service/internal/services" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>

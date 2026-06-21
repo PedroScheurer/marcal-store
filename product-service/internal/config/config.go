@@ -10,7 +10,9 @@ import (
 // application.yaml. As seções de Eureka e Resilience4j serão
 // adicionadas quando implementarmos o client e o registro no Eureka.
 type Config struct {
-	ServerPort string
+	ServerPort      string
+	ApplicationName string
+	HostName        string
 
 	DBHost     string
 	DBPort     string
@@ -25,7 +27,9 @@ type Config struct {
 // (server.port: 8082, spring.datasource.url: .../bd_product).
 func Load() Config {
 	return Config{
-		ServerPort: getEnv("SERVER_PORT", "8082"),
+		ServerPort:      getEnv("SERVER_PORT", "8082"),
+		ApplicationName: getEnv("APP_NAME", "product-service"),
+		HostName:        getEnv("HOST_NAME", "localhost"),
 
 		DBHost:     getEnv("DB_HOST", "localhost"),
 		DBPort:     getEnv("DB_PORT", "5432"),
