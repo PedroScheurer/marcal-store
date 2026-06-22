@@ -12,7 +12,6 @@ import (
 type Config struct {
 	ServerPort      string
 	ApplicationName string
-	HostName        string
 
 	DBHost     string
 	DBPort     string
@@ -20,6 +19,9 @@ type Config struct {
 	DBUser     string
 	DBPassword string
 	DBSSLMode  string
+
+	EurekaURL string
+	HostName  string
 }
 
 // Load lê a configuração das variáveis de ambiente, com defaults
@@ -29,7 +31,6 @@ func Load() Config {
 	return Config{
 		ServerPort:      getEnv("SERVER_PORT", "8082"),
 		ApplicationName: getEnv("APP_NAME", "product-service"),
-		HostName:        getEnv("HOST_NAME", "localhost"),
 
 		DBHost:     getEnv("DB_HOST", "localhost"),
 		DBPort:     getEnv("DB_PORT", "5432"),
@@ -37,6 +38,9 @@ func Load() Config {
 		DBUser:     getEnv("POSTGRES_USER", ""),
 		DBPassword: getEnv("POSTGRES_PASSWORD", ""),
 		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
+
+		HostName:  getEnv("HOST_NAME", "localhost"),
+		EurekaURL: getEnv("EUREKA_URL", "http://localhost:8761/eureka"),
 	}
 }
 

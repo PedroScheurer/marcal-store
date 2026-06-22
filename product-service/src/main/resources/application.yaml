@@ -1,0 +1,105 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: product-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/bd_product
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
+  flyway:
+    locations: classpath:db_migration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  cloud:
+    openfeign:
+      client:
+        config:
+          currency-service:
+            connect-timeout: 1000
+            read-timeout: 3000
+      circuitbreaker:
+          enabled: true
+          group:
+            enabled: true
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=15s
+
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      github:
+        repo: PedroScheurer/microservices-atitus
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+    healthcheck:
+      enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,circuit-breakers,circuit-breaker-events
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+  health:
+    defaults:
+      enabled: true
+    circuitbreakers:
+      enabled: true
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: [Serviço que gerencia os produtos cadastrados e consulta as cotações de moedas do currency-service]
+    autor: [Pedro Konig Scheurer]
+
+resilience4j:
+  retry:
+    configs:
+      default:
+        max-attempts: 2
+        wait-duration: 20ms
+    instances:
+      Retry_CurrencyClient_getCurrency:
+        max-attempts: 3
+        wait-duration: 500ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2.0
+        enable-randomized-wait: true
+        randomized-wait-factor: 0.5
+        ignore-exceptions:
+          - feign.FeignException.FeignClientException
+        retry-exceptions:
+          - feign.RetryableException
+          - java.net.SocketTimeoutException
+          - feign.FeignException.FeignServerException
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowType: COUNT_BASED #TIME_BASED
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        failureRateThreshold: 50
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+    instances:
+      CurrencyClientgetCurrencyStringString:
+        base-config: default
+        wait-duration-in-open-state: 30s
+        register-health-indicator: true
+        automatic-transition-from-open-to-half-open-enabled: true

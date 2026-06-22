@@ -1,0 +1,45 @@
+spring:
+  application:
+    name: gateway-service
+
+server:
+  port: 8765
+
+eureka:
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${server.port}
+    metadata-map:
+      github:
+        repo: PedroScheurer/microservices-atitus
+  client:
+    service-url:
+      default-zone: http://localhost:8761/eureka
+    healthcheck:
+      enabled: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,circuit-breakers,circuit-breaker-events
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+  health:
+    defaults:
+      enabled: true
+    circuitbreakers:
+      enabled: true
+
+info:
+  app:
+    name: ${spring.application.name}
+    description: [Serviço de gateway]
+    autor: [Pedro Konig Scheurer]

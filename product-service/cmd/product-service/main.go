@@ -53,10 +53,9 @@ func main() {
 	// Equivalente ao spring.cache.caffeine.spec=maximumSize=500,expireAfterWrite=15s
 	cacheService := services.NewCacheService(500, 15*time.Second)
 
-	eurekaURL := "http://localhost:8761/eureka" // ajuste se já tiver isso no cfg
-	eurekaClient := clients.NewEurekaClient(eurekaURL, cfg.ApplicationName, cfg.HostName, cfg.ServerPort)
+	eurekaClient := clients.NewEurekaClient(cfg.EurekaURL, cfg.ApplicationName, cfg.HostName, cfg.ServerPort)
 
-	discovery := clients.NewServiceDiscovery(eurekaURL, &http.Client{Timeout: 5 * time.Second}, 20*time.Second)
+	discovery := clients.NewServiceDiscovery(cfg.EurekaURL, &http.Client{Timeout: 5 * time.Second}, 20*time.Second)
 	currencyClient := clients.NewHTTPCurrencyClient(discovery, 5*time.Second)
 
 	if err := eurekaClient.Register(ctx); err != nil {
