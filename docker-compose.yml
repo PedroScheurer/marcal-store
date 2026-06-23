@@ -43,7 +43,7 @@ services:
     ports:
       - "8888:8888"
     environment:
-      EUREKA_URL: http://discovery-service:8761/eureka
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
     depends_on:
       postgres:
         condition: service_healthy
@@ -158,7 +158,7 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       EUREKA_URL: http://discovery-service:8761/eureka
-      HOSTNAME: product-service
+      HOST_NAME: product-service
     depends_on:
       discovery-service:
         condition: service_healthy

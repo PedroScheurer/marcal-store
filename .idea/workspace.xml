@@ -6,8 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="7a34d50d-6b16-4b0a-917a-c8bbd28d7b03" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/auth-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/config-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-service/src/main/resources/application.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/currency-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/currency-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/greeting-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/greeting-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/resources/application.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,7 +20,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="EmbeddingIndexingInfo">
-    <option name="cachedIndexableFilesCount" value="70" />
+    <option name="cachedIndexableFilesCount" value="234" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -41,21 +46,21 @@
     <decayedCancelled>
       <entry key="MS100" value="1.0" />
       <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0" />
-      <entry key="S5" value="1.0" />
-      <entry key="S10" value="1.0" />
-      <entry key="S30" value="1.0" />
-      <entry key="S60" value="1.0" />
-      <entry key="M2" value="1.0" />
-      <entry key="M5" value="1.0000000000000064" />
-      <entry key="M10" value="1.0000003207153063" />
-      <entry key="M15" value="1.000120029907487" />
-      <entry key="M30" value="1.0516976136438756" />
-      <entry key="H1" value="2.5467392884880242" />
-      <entry key="H2" value="11.986277737743944" />
-      <entry key="H4" value="32.797834612328685" />
-      <entry key="D1" value="81.26899410002731" />
-      <entry key="W1" value="95.4039706651322" />
+      <entry key="S2" value="1.0000155848090038" />
+      <entry key="S5" value="1.0119420969799011" />
+      <entry key="S10" value="1.1092799019943793" />
+      <entry key="S30" value="1.4780941548305497" />
+      <entry key="S60" value="1.691487668799343" />
+      <entry key="M2" value="1.838238488265414" />
+      <entry key="M5" value="2.1040395123073345" />
+      <entry key="M10" value="2.6796274475987767" />
+      <entry key="M15" value="3.20311466799282" />
+      <entry key="M30" value="4.1933804278042555" />
+      <entry key="H1" value="6.016673037831938" />
+      <entry key="H2" value="14.607365883378332" />
+      <entry key="H4" value="34.77159672340616" />
+      <entry key="D1" value="85.02690316995195" />
+      <entry key="W1" value="100.1952559081924" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -63,37 +68,37 @@
       <entry key="S2" value="0.0" />
       <entry key="S5" value="0.0" />
       <entry key="S10" value="0.0" />
-      <entry key="S30" value="5.650880377139142E-221" />
-      <entry key="S60" value="7.518113572233482E-111" />
-      <entry key="M2" value="8.82431867077675E-56" />
-      <entry key="M5" value="1.5568012359134715E-22" />
-      <entry key="M10" value="4.358040281381059E-11" />
-      <entry key="M15" value="3.8132023898718264E-7" />
-      <entry key="M30" value="0.004119322790242644" />
-      <entry key="H1" value="0.46790225043900296" />
-      <entry key="H2" value="5.113945738563874" />
-      <entry key="H4" value="17.027995567479447" />
-      <entry key="D1" value="46.585812833368074" />
-      <entry key="W1" value="55.380039701960484" />
+      <entry key="S30" value="1.1587328802923852E-239" />
+      <entry key="S60" value="3.404414961942297E-120" />
+      <entry key="M2" value="1.8777941749500948E-60" />
+      <entry key="M5" value="2.1058134216538433E-24" />
+      <entry key="M10" value="5.068560105688057E-12" />
+      <entry key="M15" value="9.085568291552381E-8" />
+      <entry key="M30" value="0.00201074475672626" />
+      <entry key="H1" value="0.32690434587084" />
+      <entry key="H2" value="4.274535179769407" />
+      <entry key="H4" value="15.567895886123162" />
+      <entry key="D1" value="45.894933245071186" />
+      <entry key="W1" value="55.2619584573845" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.06037102055780285" />
-      <entry key="MS500" value="0.5703818579342118" />
-      <entry key="S2" value="0.8690433204285116" />
-      <entry key="S5" value="0.9454021167507437" />
-      <entry key="S10" value="0.9723179093026847" />
-      <entry key="S30" value="0.9906861581012825" />
-      <entry key="S60" value="0.9953321848012765" />
-      <entry key="M2" value="0.9976633624631489" />
-      <entry key="M5" value="0.9990646889825304" />
-      <entry key="M10" value="0.9995325552125162" />
-      <entry key="M15" value="0.999808384473969" />
-      <entry key="M30" value="1.0556242836505734" />
-      <entry key="H1" value="3.013887042229472" />
-      <entry key="H2" value="17.097423085102424" />
-      <entry key="H4" value="49.821584534043865" />
-      <entry key="D1" value="127.85296294979847" />
-      <entry key="W1" value="150.78369916160548" />
+      <entry key="MS100" value="0.9395227492140118" />
+      <entry key="MS500" value="0.9876008614453725" />
+      <entry key="S2" value="0.9969011636530097" />
+      <entry key="S5" value="1.0106588439731374" />
+      <entry key="S10" value="1.1084897475465558" />
+      <entry key="S30" value="1.4776432749979913" />
+      <entry key="S60" value="1.6912079831810607" />
+      <entry key="M2" value="1.8380801613071802" />
+      <entry key="M5" value="2.103949595458226" />
+      <entry key="M10" value="2.679512963145091" />
+      <entry key="M15" value="3.2029854935135513" />
+      <entry key="M30" value="4.195255136722436" />
+      <entry key="H1" value="6.343023268478725" />
+      <entry key="H2" value="18.879544913261817" />
+      <entry key="H4" value="50.33560275688454" />
+      <entry key="D1" value="130.9200183192654" />
+      <entry key="W1" value="155.45690361311742" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -130,7 +135,7 @@
     "git-widget-placeholder": "main",
     "go.sdk.automatically.set": "true",
     "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/SB00028/Projects/faculdade/PARADIGMA DE LINGUAGENS DE PROGRAMAÇÃO/marcal-store",
+    "last_opened_file_path": "C:/Users/pedro",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
