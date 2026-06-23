@@ -1,109 +1,172 @@
-# product-service (Go) — Etapa 1: Controllers, Services, Repositories
+# product-service (Go Port)
+O product-service é o microsserviço de catálogo e gerenciamento de produtos do ecossistema, reescrito em Go 1.24 para atingir performance extrema, baixíssima pegada de memória e tempos de inicialização instantâneos.
 
-Conversão do `product-service` Java/Spring Boot para Go. Esta primeira etapa
-cobre a camada de domínio (controllers, services, repositories), conforme
-acordado. O client HTTP para o `currency-service`, o registro no Eureka e a
-resiliência (retry/circuit breaker) ficam para as próximas etapas.
+A aplicação espelha rigorosamente as regras de negócio e contratos de API de sua contraparte original em Java/Spring Boot. Ela se conecta dinamicamente ao ecossistema micro-controlado por meio de um cliente nativo do Netflix Eureka, consome taxas de câmbio dinâmicas do currency-service, expõe telemetria para o Prometheus e implementa estratégias robustas de tolerância a falhas utilizando uma variação do algoritmo de Circuit Breaker (através do gobreaker).
 
-## Stack escolhida
+## 🛠️ Tecnologias e Dependências Principais
+Go 1.24.0: Core da aplicação utilizando os recursos mais recentes de concorrência e tipagem genérica da linguagem.
 
-- Roteamento HTTP: [chi](https://github.com/go-chi/chi) (v5.1.0, compatível com Go 1.22)
-- Acesso a dados: `database/sql` + [sqlx](https://github.com/jmoiron/sqlx) (v1.3.5)
-- Driver Postgres: [lib/pq](https://github.com/lib/pq)
-- Go 1.22.2 (mesma versão disponível no ambiente onde isso foi escrito e testado)
+Go-Chi Router (v5): Roteador HTTP idiomático, leve e extremamente rápido, ideal para a construção de REST APIs modulares.
 
-> Nota sobre versões: o ambiente onde fiz a conversão só tinha acesso a
-> `archive.ubuntu.com` (apt) e GitHub direto (sem `proxy.golang.org`), então
-> fixei `chi v5.1.0` (a v5.3.0 mais recente exige Go 1.23+) e `sqlx v1.3.5`
-> (versões mais novas trazem o driver `go-sql-driver/mysql` como dependência
-> indireta, que por sua vez depende de `filippo.io/edwards25519`, inacessível
-> nesse ambiente). No seu ambiente local, com acesso normal ao proxy do Go,
-> você pode tentar atualizar essas versões com `go get -u` se quiser, mas elas
-> funcionam perfeitamente como estão.
+Sqlx & Lib/PQ: Extensão da biblioteca padrão database/sql para mapeamento relacional fluído e de alta performance acoplado ao PostgreSQL.
 
-## Estrutura
+Go-Migrate: Mecanismo de migração de banco de dados nativo executado de forma programática durante o bootstrap da aplicação (db_migration).
 
-```
-cmd/product-service/main.go     equivalente ao ProductServiceApplication (monta tudo e inicia o servidor)
-internal/config/                carrega configuração do ambiente (porta, dados de conexão do Postgres)
-internal/controllers/           ProductController e WsProductController (rotas chi)
-internal/services/              ProductService, WsProductService, CurrencyConversionService, CacheService
-internal/repositories/          ProductRepository (interface) + implementação Postgres com sqlx
-internal/entities/              ProductEntity (struct com tags `db`)
-internal/dtos/                  ProductDTO, ProductInDTO, ProductOutDTO, ProductUpdateInDTO, Page[T], ErrorResponse
-internal/apperrors/             erros customizados + tradução para respostas HTTP (equivalente ao @ControllerAdvice)
-db_migration/                   scripts SQL originais (ainda não plugados a uma ferramenta de migração)
-```
+Sony/Gobreaker & Avast/Retry-Go: Combinação cirúrgica para resiliência na comunicação de rede, implementando padrões estáveis de Circuit Breaker e Retry com recuo exponencial.
 
-## Mapeamento Java → Go (visão rápida)
+HelloFresh/Health-Go: Engine para monitoramento de saúde de dependências físicas (como conectividade de banco de dados).
 
-| Java | Go |
-|---|---|
-| `@RestController` + `@GetMapping`/`@PostMapping`/... | `chi.Router` + handlers em `internal/controllers` |
-| `@Service` | struct simples em `internal/services`, injetada via construtor `New...` |
-| `JpaRepository<ProductEntity, Long>` | interface `ProductRepository` + impl. `postgresProductRepository` com sqlx |
-| `Optional<ProductEntity>` vazio | `(*entities.ProductEntity)(nil)` retornado pelo repository |
-| `@ControllerAdvice` / `GlobalExceptionHandler` | `apperrors.WriteErrorResponse`, chamado explicitamente em cada handler |
-| Exceções customizadas (`ProductNotFoundException` etc.) | tipos de erro em `internal/apperrors`, usando `errors.As` para despachar |
-| Cache Caffeine (`spring.cache.caffeine.spec`) | `CacheService` próprio, com TTL + eviction LRU em memória |
-| `Page<T>` do Spring Data | `dtos.Page[T]` (genérico), com os mesmos campos (`content`, `totalElements`, etc.) |
-| `@RequestHeader` obrigatório | leitura manual do header + erro 401 se ausente/inválido |
-| `@Value("${server.port}")` | `config.Config.ServerPort`, lido de env var com fallback `8082` |
+Prometheus Client Golang: Instrumentação nativa e exposição de métricas de runtime do Go no padrão OpenMetrics.
 
-## O que ainda falta (próximas etapas, por sua escolha)
+## 📂 Estrutura de Diretórios do Projeto
+Mapeado de acordo com a arquitetura limpa de pacotes padrão Go e a árvore exibida em image_453ac4.png:
 
-1. **Client HTTP do currency-service**: hoje existe só a interface
-   `services.CurrencyClient` e uma implementação `noopCurrencyClient`
-   (sempre cai no fallback). Falta o client real fazendo a chamada HTTP.
-2. **Registro no Eureka**: o serviço ainda não se registra em nenhum
-   service discovery.
-3. **Resiliência**: retry e circuit breaker (equivalentes ao
-   `@Retry`/`@CircuitBreaker` do Resilience4j no `application.yaml`) serão
-   adicionados quando implementarmos o client.
-4. **Migrations**: os arquivos `.sql` foram copiados para `db_migration/`,
-   mas ainda não há uma ferramenta (ex.: `golang-migrate`/`goose`) plugada
-   para rodá-los automaticamente como o Flyway fazia no Java.
-5. **Validação de payload de entrada**: o Java usa Bean Validation
-   (`@Valid` + anotações) nos DTOs de entrada — isso ainda não foi
-   replicado nos `ProductInDTO`/`ProductUpdateInDTO` em Go.
+Plaintext
+product-service/
+├── cmd/
+│   └── product-service/
+│       └── main.go              # Ponto de entrada (Montagem manual do grafo de injeção de dependência)
+├── internal/
+│   ├── apperrors/               # Centralizador de handlers globais e mapeamento de Status HTTP
+│   ├── clients/                 # Clientes HTTP (OpenFeign Replacement para Eureka e CurrencyClient)
+│   ├── config/                  # Estruturas de leitura de variáveis de ambiente do SO (Load)
+│   ├── controllers/             # Camada de Handlers HTTP (ProductController, WsProductController)
+│   ├── dtos/                    # Estruturas de dados e Records Go (ProductDTO, Page[T])
+│   ├── entities/                # Structs de mapeamento de tabelas relacionais do banco
+│   ├── infra/                   # Inicializadores de infra (Migrations, HealthCheckers)
+│   ├── repositories/            # Camada de persistência SQL pura
+│   └── services/                # Regras de negócio e Cache LRU In-Memory concorrente
+├── go.mod                       # Definição de dependências do módulo
+└── go.sum                       # Somas de verificação de integridade
+## 📡 Endpoints da API & Exemplos de cURL
+A aplicação roda nativamente na porta 8082 (ou na variável de ambiente SERVER_PORT).
 
-## Pontos de atenção / decisões a confirmar com você
+### 1. Consulta de Produto com Conversão Monetária Online
+Recupera os detalhes do produto e injeta o preço convertido com base na moeda requisitada.
 
-- **`ErrorResponse.status`**: no Java o campo do record está escrito como
-  `staus` (erro de digitação). Corrigi para `status` no JSON de saída do Go.
-  Se algum client já depende do nome com erro de digitação, me avise para
-  eu reverter.
-- **Bug aparente em `WsProductService.createProduct`**: a checagem original
-  em Java é `if (userType.equals(ADMIN_TYPE)) throw new AuthenticationException(...)`,
-  ou seja, bloqueia justamente o usuário do tipo "admin" (0) de criar
-  produtos, e libera qualquer outro tipo — o oposto do que os métodos de
-  alterar/excluir fazem (que exigem `ADMIN_TYPE`). Mantive esse comportamento
-  idêntico no Go (veja o comentário em `ws_product_service.go`), mas vale
-  confirmar se é intencional.
-- **DTO de entrada do PUT**: o Java reaproveita o record `ProductDTO` (de
-  saída, com campos de conversão de moeda) como `@RequestBody` do PUT, mas só
-  lê 5 campos dele. Criei um `ProductUpdateInDTO` próprio em Go, mais
-  explícito sobre o que a API espera no corpo da requisição.
+URL: /products/{idProduct}
 
-## Como rodar (assumindo Postgres já rodando)
+Método HTTP: GET
 
-```bash
+Query Params Obrigatórios: targetCurrency
+
+Exemplo de Requisição (cURL):
+
+Bash
+curl -X GET "http://localhost:8082/products/1?targetCurrency=BRL" \
+-H "Accept: application/json"
+Exemplo de Resposta (200 OK):
+
+JSON
+{
+"id": 1,
+"name": "Arquitetura de Microsserviços com Go",
+"instructor": "Pedro Konig Scheurer",
+"imageUrl": "http://...",
+"videoUrl": "http://...",
+"description": "Curso avançado",
+"workload": 40,
+"modules": 5,
+"price": 10.00,
+"currency": "USD",
+"convertedPrice": 52.50,
+"requestedCurrency": "BRL",
+"environment": "Product-service running on Port: 8082 | Currency-service running on Port: 8081 | Banco Central do Brasil"
+}
+### 2. Criação de Produto (Área Administrativa)
+Garante que apenas usuários do tipo ADMIN (código 0) possam persistir novos produtos. Os cabeçalhos X-User-* são repassados e validados na borda pelo API Gateway.
+
+URL: /ws/products
+
+Método HTTP: POST
+
+Exemplo de Requisição (cURL):
+
+Bash
+curl -X POST http://localhost:8082/ws/products \
+-H "Content-Type: application/json" \
+-H "X-User-Id: 55" \
+-H "X-User-Email: admin@atitus.edu.br" \
+-H "X-User-Type: 0" \
+-d '{
+"name": "Go para Iniciantes",
+"instructor": "Pedro Scheurer",
+"description": "Do zero ao profissional",
+"workload": 20,
+"modules": 3,
+"price": 100.0,
+"currency": "BRL"
+}'
+## 🧠 Engenharia de Resiliência & Mecanismos Customizados
+### 🧊 Cache LRU Concorrente (CacheService)
+Para emular perfeitamente a especificação do Caffeine Cache utilizado na stack Java (maximumSize=500,expireAfterWrite=15s), foi codificado um serviço de cache nativo em Go utilizando uma lista duplamente encadeada (container/list) protegida por travas de exclusão mútua (sync.Mutex).
+
+Eviction automatizada baseada em LRU (Least Recently Used) quando o tamanho ultrapassa 500 itens.
+
+Controle de TTL estrito por entrada para expiração de valores cambiais voláteis após 15 segundos.
+
+### 🔌 Roteamento e Paginação Idiomáticos (Spring Data Emulation)
+Como o Go-Chi não possui resoluções de assinaturas automáticas de paginação como o Spring Data (Pageable), o pacote controllers estende um parser customizado (parsePageable) que extrai de forma transparente parâmetros como ?page=0&size=5&sort=price,desc e encapsula os dados em um wrapper genérico Page[T] compatível com o formato JSON enviado pelo ecossistema Java original.
+
+## 📊 Observabilidade e Monitoramento
+A porta de gerenciamento disponibiliza as seguintes interfaces de telemetria expostas sob o path /management:
+
+HealthCheck Unificado: GET http://localhost:8082/management/health
+
+Métricas do Prometheus (Runtime Go & GC): GET http://localhost:8082/management/metrics
+
+Informações do Sistema: GET http://localhost:8082/management/info
+
+## ⚙️ Como Executar a Aplicação
+Tenha o Go 1.24+ configurado em sua máquina.
+
+Certifique-se de expor as variáveis de ambiente necessárias ou use as configurações padrão:
+
+Bash
 export DB_HOST=localhost
-export DB_PORT=5432
-export DB_NAME=bd_product
-export POSTGRES_USER=seu_usuario
+export POSTGRES_USER=postgres
 export POSTGRES_PASSWORD=sua_senha
-export SERVER_PORT=8082
+Execute o bootstrap do serviço (as migrações do banco via Flyway equivalente serão aplicadas instantaneamente):
 
-go run ./cmd/product-service
-```
+Bash
+go run cmd/product-service/main.go
 
-## Testes
+## 📡 Descoberta de Serviços e Clientes Reativos (/internal/clients)
+Para operar de forma transparente em uma arquitetura de microsserviços originalmente desenhada para Java/Spring, a camada de comunicação foi reescrita utilizando padrões nativos em Go, implementando o ciclo de vida completo de Descoberta de Serviços e Resiliência de Rede:
 
-```bash
-go test ./...
-```
+Plaintext
+[ product-service (Go) ]
+│
+├───► (1) ResolveURL() ──► [ Service Discovery (Cache Local TTL 20s) ] ──► [ Eureka Server ]
+│
+└───► (2) GetCurrency() ──► [ Circuit Breaker & Retry ] ──► HTTP GET ──► [ currency-service ]
+### 1. Registro e Ciclo de Vida no Eureka (EurekaClient)
+Ao contrário do Java, onde a anotação @EnableDiscoveryClient oculta a complexidade, em Go o ciclo de vida REST do Netflix Eureka é gerenciado de forma explícita através de goroutines:
 
-Hoje só há testes unitários para `CurrencyConversionService` (lógica pura,
-sem banco). Testes de integração para repository/controllers podem ser
-adicionados numa próxima etapa, se quiser.
+Bootstrap (Register): Dispara um payload POST /eureka/apps/PRODUCT-SERVICE mapeando os metadados da instância, URLs de saúde e portas no padrão esperado pelo Spring Cloud.
+
+Renovação de Lease (StartHeartbeatLoop): Uma goroutine executa requisições PUT a cada 30 segundos. Caso o Eureka responda 404 Not Found (indicação de que a instância sofreu eviction por timeout), o cliente reconstrói o estado e efetua o re-registro de forma autônoma.
+
+Shutdown Gracioso (Deregister): Intercepta sinais do sistema operacional (SIGTERM e os.Interrupt), disparando um DELETE para remover imediatamente o nó do balanceador, evitando o roteamento de requisições fantasmas (zombies).
+
+### 2. Balanceamento Reativo e Resolução Dinâmica (ServiceDiscovery)
+Para emular o comportamento do Spring Cloud LoadBalancer, foi codificado um componente de descoberta com cache síncrono local por TTL (20 segundos) protegido por sync.Mutex:
+
+Evita sobrecarregar o Eureka com chamadas HTTP a cada requisição de negócio.
+
+Estratégia de Resiliência Passiva: Se o servidor do Eureka estiver temporariamente fora do ar, o ServiceDiscovery intercepta o erro de rede e continua servindo os endereços antigos já cacheados (mesmo que expirados), preferindo uma rota potencialmente desatualizada a quebrar o fluxo completo do cliente.
+
+### 3. Resiliência de Rede Baseada em Contratos (HTTPCurrencyClient)
+A implementação substitui os componentes declarativos do @FeignClient e @Retry/@CircuitBreaker do Resilience4j acoplando duas bibliotecas consolidadas do Go:
+
+#### 🔄 Política de Retry (avast/retry-go)
+Envolve a chamada de rede executando até 3 tentativas com recuo exponencial e fator multiplicador (Exponential Backoff Delay).
+
+Filtro de Exceções: Avalia o erro de forma inteligente. Erros de infraestrutura (como Timeout ou Connection Refused) disparam novas tentativas, enquanto erros de negócio (404 Not Found da moeda) abortam o laço imediatamente, poupando recursos de rede.
+
+#### 🔌 Política de Circuit Breaker (sony/gobreaker)
+Usa uma janela móvel para monitorar as falhas de rede do currency-service. O circuito é configurado de forma equivalente às definições do seu application.yml original:
+
+Métricas: Exige um mínimo de 5 chamadas para análise; se a taxa de falha for superior a 50%, o circuito muda para o estado Aberto.
+
+Tratamento de Erros e Fallback: Conforme o contrato especificado para interrupções, se o circuito estiver em estado Aberto (gobreaker.ErrOpenState), a falha é suprimida retornando (nil, nil), acionando de forma limpa a camada de banco de dados local do seu CurrencyConversionService (fluxo de contingência).

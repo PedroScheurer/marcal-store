@@ -1,6 +1,5 @@
 # Ignora tudo
 **
 
-# Exceto pom.xml e a pasta src/
-!pom.xml
+
 !src/

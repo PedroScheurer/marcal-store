@@ -5,14 +5,50 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a34d50d-6b16-4b0a-917a-c8bbd28d7b03" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/auth-service/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/currency-service/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/gateway-service/README.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/order-service/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/config-service/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/currency-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/currency-service/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/gateway-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/gateway-service/src/main/resources/application.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/greeting-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/greeting-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/application.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/src/main/resources/application.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/order-service/.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/.dockerignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/.idea/dataSources.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/.idea/go.imports.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/.idea/product-service.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/mvnw" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/mvnw.cmd" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/ProductServiceApplication.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/clients/CurrencyClient.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/clients/CurrencyClientFallbackFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/clients/CurrencyResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/controllers/ProductController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/controllers/WsProductController.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/dtos/ConversionResult.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/dtos/ErrorResponse.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/dtos/ProductDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/dtos/ProductInDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/dtos/ProductOutDTO.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/entities/ProductEntity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/infrastructure/exceptions/ExternalServiceException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/infrastructure/exceptions/GlobalExceptionHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/infrastructure/exceptions/ProductNotFoundException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/repositories/ProductRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/services/CacheService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/services/CurrencyConversionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/services/ProductService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/services/WsProductService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/application.yaml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/db_migration/V1__CreateTableTbProduct.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/db_migration/V2__PopulateTableTbProduct.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/db_migration/V3__AlterIdTypeTbProduct.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/test/java/br/edu/atitus/productservice/ProductServiceApplicationTests.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product-service/src/test/java/br/edu/atitus/productservice/controllers/ProductControllerTest.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,7 +66,7 @@
       </list>
     </option>
   </component>
-  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../Program Files/Go" />
+  <component name="GOROOT" url="file://$PROJECT_DIR$/../../../../../../Program Files/Go" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -46,21 +82,21 @@
     <decayedCancelled>
       <entry key="MS100" value="1.0" />
       <entry key="MS500" value="1.0" />
-      <entry key="S2" value="1.0000155848090038" />
-      <entry key="S5" value="1.0119420969799011" />
-      <entry key="S10" value="1.1092799019943793" />
-      <entry key="S30" value="1.4780941548305497" />
-      <entry key="S60" value="1.691487668799343" />
-      <entry key="M2" value="1.838238488265414" />
-      <entry key="M5" value="2.1040395123073345" />
-      <entry key="M10" value="2.6796274475987767" />
-      <entry key="M15" value="3.20311466799282" />
-      <entry key="M30" value="4.1933804278042555" />
-      <entry key="H1" value="6.016673037831938" />
-      <entry key="H2" value="14.607365883378332" />
-      <entry key="H4" value="34.77159672340616" />
-      <entry key="D1" value="85.02690316995195" />
-      <entry key="W1" value="100.1952559081924" />
+      <entry key="S2" value="1.0" />
+      <entry key="S5" value="1.0000000000204827" />
+      <entry key="S10" value="1.0000045257866286" />
+      <entry key="S30" value="1.01654111159596" />
+      <entry key="S60" value="1.128612252899792" />
+      <entry key="M2" value="1.3586255215026852" />
+      <entry key="M5" value="1.6642930356942993" />
+      <entry key="M10" value="1.8423057604603765" />
+      <entry key="M15" value="1.9638339202367525" />
+      <entry key="M30" value="2.236636237389358" />
+      <entry key="H1" value="2.5279375368606507" />
+      <entry key="H2" value="3.3594902319085125" />
+      <entry key="H4" value="10.100773857395922" />
+      <entry key="D1" value="68.44599654196" />
+      <entry key="W1" value="99.51968231825138" />
     </decayedCancelled>
     <decayedSelected>
       <entry key="MS100" value="0.0" />
@@ -68,37 +104,37 @@
       <entry key="S2" value="0.0" />
       <entry key="S5" value="0.0" />
       <entry key="S10" value="0.0" />
-      <entry key="S30" value="1.1587328802923852E-239" />
-      <entry key="S60" value="3.404414961942297E-120" />
-      <entry key="M2" value="1.8777941749500948E-60" />
-      <entry key="M5" value="2.1058134216538433E-24" />
-      <entry key="M10" value="5.068560105688057E-12" />
-      <entry key="M15" value="9.085568291552381E-8" />
-      <entry key="M30" value="0.00201074475672626" />
-      <entry key="H1" value="0.32690434587084" />
-      <entry key="H2" value="4.274535179769407" />
-      <entry key="H4" value="15.567895886123162" />
-      <entry key="D1" value="45.894933245071186" />
-      <entry key="W1" value="55.2619584573845" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="1.2332110288160357E-283" />
+      <entry key="M2" value="3.573925064402406E-142" />
+      <entry key="M5" value="4.3173660420923324E-57" />
+      <entry key="M10" value="2.2950074089778493E-28" />
+      <entry key="M15" value="1.1542106866894817E-18" />
+      <entry key="M30" value="7.166769584324873E-9" />
+      <entry key="H1" value="6.171687712337076E-4" />
+      <entry key="H2" value="0.18572934192960425" />
+      <entry key="H4" value="3.2450824120673114" />
+      <entry key="D1" value="35.339796514712404" />
+      <entry key="W1" value="53.23679312902092" />
     </decayedSelected>
     <decayedShown>
-      <entry key="MS100" value="0.9395227492140118" />
-      <entry key="MS500" value="0.9876008614453725" />
-      <entry key="S2" value="0.9969011636530097" />
-      <entry key="S5" value="1.0106588439731374" />
-      <entry key="S10" value="1.1084897475465558" />
-      <entry key="S30" value="1.4776432749979913" />
-      <entry key="S60" value="1.6912079831810607" />
-      <entry key="M2" value="1.8380801613071802" />
-      <entry key="M5" value="2.103949595458226" />
-      <entry key="M10" value="2.679512963145091" />
-      <entry key="M15" value="3.2029854935135513" />
-      <entry key="M30" value="4.195255136722436" />
-      <entry key="H1" value="6.343023268478725" />
-      <entry key="H2" value="18.879544913261817" />
-      <entry key="H4" value="50.33560275688454" />
-      <entry key="D1" value="130.9200183192654" />
-      <entry key="W1" value="155.45690361311742" />
+      <entry key="MS100" value="0.158219574246285" />
+      <entry key="MS500" value="0.6915953145054824" />
+      <entry key="S2" value="0.911933165519769" />
+      <entry key="S5" value="0.9637961879763998" />
+      <entry key="S10" value="0.9817356270326851" />
+      <entry key="S30" value="1.0102683245246356" />
+      <entry key="S60" value="1.1249762177269975" />
+      <entry key="M2" value="1.3562977166177037" />
+      <entry key="M5" value="1.6630909462448915" />
+      <entry key="M10" value="1.8416240515839366" />
+      <entry key="M15" value="1.9633407233214129" />
+      <entry key="M30" value="2.2363446866011554" />
+      <entry key="H1" value="2.528384468159643" />
+      <entry key="H2" value="3.5450238547481154" />
+      <entry key="H4" value="13.344996076405542" />
+      <entry key="D1" value="103.78438444210568" />
+      <entry key="W1" value="152.75617483550803" />
     </decayedShown>
   </component>
   <component name="ProjectColorInfo">{
@@ -115,6 +151,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
     "DefaultGoTemplateProperty": "Go File",
     "Go Build.go build github.com/PedroScheurer/product-service/cmd/product-service.executor": "Run",
     "Go Test.TestConvert_SameCurrency_ReturnsOriginalPrice in github.com/PedroScheurer/product-service/internal/services.executor": "Run",
