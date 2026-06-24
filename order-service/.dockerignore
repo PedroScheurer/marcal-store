@@ -1,5 +1,3 @@
-# Ignora tudo
-**
-
-
-!src/
+# Ignora artefatos de build local; mantém o necessário para o Dockerfile.
+target/
+.mvn/wrapper/maven-wrapper.jar

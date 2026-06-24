@@ -43,9 +43,15 @@ O parque tecnológico é composto por infraestruturas de suporte e serviços de 
 ### Componentes de Infraestrutura e Suporte
 discovery-service (Porta 8761): Servidor central do Netflix Eureka para registro e descoberta de instâncias.
 
-config-service (Porta 8888): Servidor de configuração centralizado Spring Cloud Config.
+config-service (Porta 8888): Servidor de configuração centralizado. Usa os arquivos locais em `configs/` (modo native), sem depender do GitHub.
 
-postgres (Porta 5433 externo / 5432 interno): Instância isolada do PostgreSQL 16 com base de dados particionada para os microsserviços.
+postgres-auth (Porta 5434): PostgreSQL dedicado ao auth-service (db_user).
+
+postgres-product (Porta 5435): PostgreSQL dedicado ao product-service (bd_product).
+
+postgres-currency (Porta 5436): PostgreSQL dedicado ao currency-service (db_currency).
+
+postgres-order (Porta 5437): PostgreSQL dedicado ao order-service (db_order).
 
 pgadmin (Porta 5050): Interface gráfica para administração das tabelas SQL.
 
@@ -56,7 +62,7 @@ auth-service (Porta 8900): Emissor de credenciais e gestão de usuários (db_use
 
 product-service (Porta 8082): Catálogo escrito em Go 1.24 com cache LRU em memória e migrações automatizadas (bd_product).
 
-currency-service (Porta 8081): Conversor de cotações monetárias em tempo real (db_currency).
+currency-service (Porta 18081 → 8081 interno): Conversor de cotações monetárias em tempo real (db_currency).
 
 order-service (Porta 8200): Processador de pedidos com conversão cambial histórica de compras (db_order).
 
@@ -65,7 +71,7 @@ greeting-service (Porta 8080): Serviço demonstrativo para validação de entreg
 ## 🛡️ Padrões de Resiliência e Segurança Aplicados
 Segurança Centralizada (Edge Security): A validação e descriptografia do token JWT ocorre estritamente no Gateway. Serviços internos recebem os dados do usuário já mastigados via Headers HTTP customizados (X-User-Id, X-User-Email, X-User-Type), eliminando redundância de código de segurança nos microsserviços de negócio.
 
-Isolamento de Estado (Database-per-Service): Nenhum microsserviço acessa a tabela de outro. Embora compartilhem o mesmo container Docker postgres, cada um possui seu banco de dados lógico estritamente isolado (db_user, db_currency, db_order, bd_product).
+Isolamento de Estado (Database-per-Service): Cada microsserviço com persistência possui sua **própria instância PostgreSQL** no Docker (postgres-auth, postgres-product, postgres-currency, postgres-order). Nenhum serviço acessa o banco de outro.
 
 Circuit Breaker & Fallback: Implementado na comunicação crítica de cotações. Se o currency-service falhar ou apresentar alta latência, o circuito abre e o sistema entra em modo de degradação suave (fallback), servindo valores locais em cache para não interromper a experiência do usuário.
 

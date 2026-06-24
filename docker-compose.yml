@@ -1,25 +1,63 @@
+x-postgres-defaults: &postgres-defaults
+  image: postgres:16-alpine
+  environment: &postgres-env
+    POSTGRES_USER: admin
+    POSTGRES_PASSWORD: admin
+  networks:
+    - microservices-net
+  healthcheck:
+    test: ["CMD-SHELL", "pg_isready -U admin"]
+    interval: 10s
+    timeout: 5s
+    retries: 5
+
 services:
 
-  # ─── INFRAESTRUTURA ───────────────────────────────────────────
+  # ─── BANCOS DE DADOS (1 instância PostgreSQL por serviço) ─────
 
-  postgres:
-    image: postgres:16-alpine
-    container_name: postgres
+  postgres-auth:
+    <<: *postgres-defaults
+    container_name: postgres-auth
     environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      <<: *postgres-env
+      POSTGRES_DB: db_user
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+      - postgres_auth_data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
-    networks:
-      - microservices-net
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      - "5434:5432"
+
+  postgres-product:
+    <<: *postgres-defaults
+    container_name: postgres-product
+    environment:
+      <<: *postgres-env
+      POSTGRES_DB: bd_product
+    volumes:
+      - postgres_product_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+
+  postgres-currency:
+    <<: *postgres-defaults
+    container_name: postgres-currency
+    environment:
+      <<: *postgres-env
+      POSTGRES_DB: db_currency
+    volumes:
+      - postgres_currency_data:/var/lib/postgresql/data
+    ports:
+      - "5436:5432"
+
+  postgres-order:
+    <<: *postgres-defaults
+    container_name: postgres-order
+    environment:
+      <<: *postgres-env
+      POSTGRES_DB: db_order
+    volumes:
+      - postgres_order_data:/var/lib/postgresql/data
+    ports:
+      - "5437:5432"
 
   pgadmin:
     image: dpage/pgadmin4
@@ -27,10 +65,20 @@ services:
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: "False"
     ports:
       - "5050:80"
+    volumes:
+      - ./databases/pgadmin-servers.json:/pgadmin4/servers.json:ro
+      - ./databases/pgpass:/pgpass:ro
     depends_on:
-      postgres:
+      postgres-auth:
+        condition: service_healthy
+      postgres-product:
+        condition: service_healthy
+      postgres-currency:
+        condition: service_healthy
+      postgres-order:
         condition: service_healthy
     networks:
       - microservices-net
@@ -42,18 +90,20 @@ services:
     container_name: config-service
     ports:
       - "8888:8888"
+    volumes:
+      - ./configs:/app/configs:ro
     environment:
+      SPRING_PROFILES_ACTIVE: native
+      CONFIG_SEARCH_LOCATIONS: file:/app/configs
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
-    depends_on:
-      postgres:
-        condition: service_healthy
     networks:
       - microservices-net
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8888/actuator/health || exit 1"]
       interval: 15s
-      timeout: 5s
+      timeout: 10s
       retries: 5
+      start_period: 30s
 
   # ─── DISCOVERY ────────────────────────────────────────────────
 
@@ -81,14 +131,14 @@ services:
     ports:
       - "8900:8900"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_user
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/db_user
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
     depends_on:
       discovery-service:
         condition: service_healthy
-      postgres:
+      postgres-auth:
         condition: service_healthy
     networks:
       - microservices-net
@@ -97,16 +147,16 @@ services:
     build: ./currency-service
     container_name: currency-service
     ports:
-      - "8081:8081"
+      - "18081:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_currency
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-currency:5432/db_currency
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
     depends_on:
       discovery-service:
         condition: service_healthy
-      postgres:
+      postgres-currency:
         condition: service_healthy
     networks:
       - microservices-net
@@ -133,14 +183,14 @@ services:
     ports:
       - "8200:8200"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_order
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-order:5432/db_order
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
     depends_on:
       discovery-service:
         condition: service_healthy
-      postgres:
+      postgres-order:
         condition: service_healthy
     networks:
       - microservices-net
@@ -152,7 +202,7 @@ services:
       - "8082:8082"
     environment:
       SERVER_PORT: "8082"
-      DB_HOST: postgres
+      DB_HOST: postgres-product
       DB_PORT: "5432"
       DB_NAME: bd_product
       POSTGRES_USER: admin
@@ -162,7 +212,7 @@ services:
     depends_on:
       discovery-service:
         condition: service_healthy
-      postgres:
+      postgres-product:
         condition: service_healthy
     networks:
       - microservices-net
@@ -179,13 +229,24 @@ services:
     depends_on:
       discovery-service:
         condition: service_healthy
+      auth-service:
+        condition: service_started
+      product-service:
+        condition: service_started
+      currency-service:
+        condition: service_started
+      order-service:
+        condition: service_started
     networks:
       - microservices-net
 
 # ─── VOLUMES E REDE ───────────────────────────────────────────
 
 volumes:
-  postgres_data:
+  postgres_auth_data:
+  postgres_product_data:
+  postgres_currency_data:
+  postgres_order_data:
 
 networks:
   microservices-net:

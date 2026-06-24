@@ -1,0 +1,44 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "auth-service (db_user)",
+      "Group": "Marçal Store",
+      "Host": "postgres-auth",
+      "Port": 5432,
+      "MaintenanceDB": "db_user",
+      "Username": "admin",
+      "SSLMode": "prefer",
+      "PassFile": "/pgpass"
+    },
+    "2": {
+      "Name": "product-service (bd_product)",
+      "Group": "Marçal Store",
+      "Host": "postgres-product",
+      "Port": 5432,
+      "MaintenanceDB": "bd_product",
+      "Username": "admin",
+      "SSLMode": "prefer",
+      "PassFile": "/pgpass"
+    },
+    "3": {
+      "Name": "currency-service (db_currency)",
+      "Group": "Marçal Store",
+      "Host": "postgres-currency",
+      "Port": 5432,
+      "MaintenanceDB": "db_currency",
+      "Username": "admin",
+      "SSLMode": "prefer",
+      "PassFile": "/pgpass"
+    },
+    "4": {
+      "Name": "order-service (db_order)",
+      "Group": "Marçal Store",
+      "Host": "postgres-order",
+      "Port": 5432,
+      "MaintenanceDB": "db_order",
+      "Username": "admin",
+      "SSLMode": "prefer",
+      "PassFile": "/pgpass"
+    }
+  }
+}

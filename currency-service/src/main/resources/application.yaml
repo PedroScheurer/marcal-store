@@ -4,7 +4,7 @@ spring:
   application:
     name: currency-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/db_currency
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5436/db_currency}
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
   flyway:

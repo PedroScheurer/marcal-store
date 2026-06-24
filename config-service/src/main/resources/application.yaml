@@ -5,18 +5,19 @@ spring:
   application:
     name: config-service
   profiles:
-    active: default
+    active: native
   cloud:
     config:
       server:
+        native:
+          search-locations: ${CONFIG_SEARCH_LOCATIONS:file:/app/configs}
+        # Git remoto desabilitado — use profile "git" apenas se precisar do repositório externo.
         git:
           uri: https://github.com/PedroScheurer/microservices-atitus.git
           default-label: main
           search-paths: 'configs'
           clone-on-start: true
           force-pull: true
-        #native:
-        #  search-locations: classpath:/config
 
 eureka:
   instance:
@@ -47,6 +48,8 @@ management:
   health:
     defaults:
       enabled: true
+    configserver:
+      enabled: false
 
 info:
   app:

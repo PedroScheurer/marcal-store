@@ -1,0 +1,4 @@
+postgres-auth:5432:db_user:admin:admin
+postgres-product:5432:bd_product:admin:admin
+postgres-currency:5432:db_currency:admin:admin
+postgres-order:5432:db_order:admin:admin
