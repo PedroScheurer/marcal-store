@@ -17,7 +17,7 @@ Spring Boot Actuator: Monitoramento em tempo real do estado de saúde e telemetr
 ## 📂 Estrutura de Diretórios do Projeto
 Seguindo o mapeamento de pacotes visualizado na estrutura da aplicação (visível em image_4536e3.png), o projeto é estruturado da seguinte forma:
 
-Plaintext
+```
 order-service/
 ├── .mvn/
 ├── src/
@@ -34,21 +34,23 @@ order-service/
 │       └── resources/
 │           ├── db_migration/        # Scripts SQL de migração da base de dados
 │           └── application.properties # Parâmetros do banco de dados, Eureka e Actuator
+```
 ## 📡 Endpoints da API & Exemplos de cURL
 O microsserviço roda nativamente na porta 8200. Os cabeçalhos de contexto de usuário (X-User-*) são injetados de forma transparente pelo API Gateway após a validação do Token JWT.
 
 ### 1. Criação de Novo Pedido (Cálculo em Tempo Real)
 Cria um pedido associado ao usuário conectado. Para cada item enviado, o serviço consulta o catálogo de produtos e converte o preço para a moeda padrão (USD).
-
+```
 URL: /ws/orders
 
 Método HTTP: POST
 
 Content-Type: application/json
+```
 
 Exemplo de Requisição (cURL):
+```
 
-Bash
 curl -X POST http://localhost:8200/ws/orders \
 -H "Content-Type: application/json" \
 -H "X-User-Id: 1024" \
@@ -60,22 +62,24 @@ curl -X POST http://localhost:8200/ws/orders \
 { "productId": 22, "quantity": 1 }
 ]
 }'
+```
 ### 2. Listagem Paginada de Pedidos com Conversão Dinâmica
 Retorna o histórico de compras do usuário conectado. O grande diferencial deste endpoint é a conversão em tempo de execução de todo o montante histórico para uma moeda alvo informada no parâmetro (targetCurrency).
-
+```
 URL: /ws/orders
 
 Método HTTP: GET
 
 Parâmetros de URL: targetCurrency (ex: BRL, EUR), page, size
-
+```
 Exemplo de Requisição (cURL):
 
-Bash
+```
 curl -X GET "http://localhost:8200/ws/orders?targetCurrency=BRL&page=0&size=5" \
 -H "X-User-Id: 1024" \
 -H "X-User-Email: usuario@atitus.edu.br" \
 -H "X-User-Type: 1"
+```
 ## 🧠 Fluxo de Regras de Negócio (OrderService)
 O processamento interno do serviço orquestra as seguintes etapas ao gerar uma ordem:
 
@@ -89,10 +93,11 @@ Fechamento e Persistência: Salva os totais originais e os totais convertidos no
 
 ## 📈 Monitoramento e Gestão (Actuator)
 O monitoramento operacional está completamente aberto para raspagem de logs e auditoria interna através dos endpoints expostos:
-
+```
 Saúde das Conexões e Probes: GET http://localhost:8200/actuator/health
 
 Métricas Gerais do Spring: GET http://localhost:8200/actuator/metrics
+```
 
 ## ⚙️ Inicialização Local
 Instale o Java 21.
@@ -103,5 +108,6 @@ Certifique-se de que o Eureka Server (discovery-service) esteja operacional na p
 
 Inicie o microsserviço:
 
-Bash
+```
 ./mvnw spring-boot:run
+```
