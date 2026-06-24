@@ -3,27 +3,29 @@ Este repositório centraliza e orquestra uma arquitetura distribuída de micross
 ## 🗺️ Arquitetura do Ecossistema
 O fluxo de dados no cluster opera sob o padrão de API Gateway e Service Discovery, estruturado da seguinte forma:
 
-Plaintext
-[ CLIENTES EXTERNOS ]
-│
-▼ (Requisições HTTP na Porta 8765)
-┌─────────────────┐
-│ gateway-service │ ◄─── Valida JWT localmente
-└────────┬────────┘
-│
-┌────────────────┴────────────────────────┐
-▼ (Roteamento Dinâmico via lb://)         ▼
-┌──────────────────┐                      ┌──────────────────┐
-│   auth-service   │                      │  order-service   │
-│   (Porta 8900)   │                      │   (Porta 8200)   │
-└──────────────────┘                      └────────┬─────────┘
-│
-┌───────────────────────────────┤ (OpenFeign síncrono)
-▼                               ▼
-┌──────────────────────────────────┐    ┌──────────────────┐
-│         product-service          ├───►│ currency-service │
-│ (Go 1.24 - Port 8082 | Cache LRU)│    │   (Porta 8081)   │
-└──────────────────────────────────┘    └──────────────────┘
+```
+                               [ CLIENTES EXTERNOS ]
+                                         │
+                                         ▼ (Java - 8765)
+                                ┌─────────────────┐
+                                │ gateway-service │
+                                └────────┬────────┘
+                                         │
+         ┌───────────────────────────────┼───────────────────────────────┐
+         ▼ (lb://auth-service)           ▼ (lb://product-service)        ▼ (lb://order-service)
+┌──────────────────┐           ┌──────────────────┐           ┌──────────────────┐
+│   auth-service   │           │ product-service  │           │  order-service   │
+│   (Java - 8900)  │           │   (Go - 8082)    │           │   (Java - 8200)  │
+└──────────────────┘           └────────┬─────────┘           └────────┬─────────┘
+                                        │                              │
+                                        │                              │ (OpenFeign)
+                                        │     ┌────────────────────────┘
+                                        ▼     ▼
+                               ┌──────────────────┐
+                               │ currency-service │
+                               │   (Java - 8081)  │
+                               └──────────────────┘
+```
 ### 📡 Como os Serviços se Comunicam
 Borda Unificada (API Gateway): O gateway-service é a única porta aberta para o mundo exterior. Ele intercepta as chamadas, valida os claims do token JWT (usando JwtUtil) e despacha as requisições para a malha interna usando nomes lógicos (lb://).
 
