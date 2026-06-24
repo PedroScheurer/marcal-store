@@ -21,7 +21,7 @@ Prometheus Client Golang: Instrumentação nativa e exposição de métricas de 
 ## 📂 Estrutura de Diretórios do Projeto
 Mapeado de acordo com a arquitetura limpa de pacotes padrão Go e a árvore exibida em image_453ac4.png:
 
-Plaintext
+```
 product-service/
 ├── cmd/
 │   └── product-service/
@@ -38,20 +38,23 @@ product-service/
 │   └── services/                # Regras de negócio e Cache LRU In-Memory concorrente
 ├── go.mod                       # Definição de dependências do módulo
 └── go.sum                       # Somas de verificação de integridade
+```
+
 ## 📡 Endpoints da API & Exemplos de cURL
 A aplicação roda nativamente na porta 8082 (ou na variável de ambiente SERVER_PORT).
 
 ### 1. Consulta de Produto com Conversão Monetária Online
 Recupera os detalhes do produto e injeta o preço convertido com base na moeda requisitada.
-
+```
 URL: /products/{idProduct}
 
 Método HTTP: GET
 
 Query Params Obrigatórios: targetCurrency
+```
 
 Exemplo de Requisição (cURL):
-
+```
 Bash
 curl -X GET "http://localhost:8082/products/1?targetCurrency=BRL" \
 -H "Accept: application/json"
@@ -73,15 +76,17 @@ JSON
 "requestedCurrency": "BRL",
 "environment": "Product-service running on Port: 8082 | Currency-service running on Port: 8081 | Banco Central do Brasil"
 }
+```
 ### 2. Criação de Produto (Área Administrativa)
 Garante que apenas usuários do tipo ADMIN (código 0) possam persistir novos produtos. Os cabeçalhos X-User-* são repassados e validados na borda pelo API Gateway.
-
+```
 URL: /ws/products
 
 Método HTTP: POST
+```
 
 Exemplo de Requisição (cURL):
-
+```
 Bash
 curl -X POST http://localhost:8082/ws/products \
 -H "Content-Type: application/json" \
@@ -97,6 +102,7 @@ curl -X POST http://localhost:8082/ws/products \
 "price": 100.0,
 "currency": "BRL"
 }'
+```
 ## 🧠 Engenharia de Resiliência & Mecanismos Customizados
 ### 🧊 Cache LRU Concorrente (CacheService)
 Para emular perfeitamente a especificação do Caffeine Cache utilizado na stack Java (maximumSize=500,expireAfterWrite=15s), foi codificado um serviço de cache nativo em Go utilizando uma lista duplamente encadeada (container/list) protegida por travas de exclusão mútua (sync.Mutex).
@@ -110,36 +116,39 @@ Como o Go-Chi não possui resoluções de assinaturas automáticas de paginaçã
 
 ## 📊 Observabilidade e Monitoramento
 A porta de gerenciamento disponibiliza as seguintes interfaces de telemetria expostas sob o path /management:
-
+```
 HealthCheck Unificado: GET http://localhost:8082/management/health
 
 Métricas do Prometheus (Runtime Go & GC): GET http://localhost:8082/management/metrics
 
 Informações do Sistema: GET http://localhost:8082/management/info
-
+```
 ## ⚙️ Como Executar a Aplicação
 Tenha o Go 1.24+ configurado em sua máquina.
 
 Certifique-se de expor as variáveis de ambiente necessárias ou use as configurações padrão:
 
-Bash
+```
 export DB_HOST=localhost
 export POSTGRES_USER=postgres
-export POSTGRES_PASSWORD=sua_senha
+export POSTGRES_PASSWORD=postgres
+```
+```
 Execute o bootstrap do serviço (as migrações do banco via Flyway equivalente serão aplicadas instantaneamente):
 
-Bash
 go run cmd/product-service/main.go
+```
 
 ## 📡 Descoberta de Serviços e Clientes Reativos (/internal/clients)
 Para operar de forma transparente em uma arquitetura de microsserviços originalmente desenhada para Java/Spring, a camada de comunicação foi reescrita utilizando padrões nativos em Go, implementando o ciclo de vida completo de Descoberta de Serviços e Resiliência de Rede:
 
-Plaintext
+```
 [ product-service (Go) ]
 │
 ├───► (1) ResolveURL() ──► [ Service Discovery (Cache Local TTL 20s) ] ──► [ Eureka Server ]
 │
 └───► (2) GetCurrency() ──► [ Circuit Breaker & Retry ] ──► HTTP GET ──► [ currency-service ]
+```
 ### 1. Registro e Ciclo de Vida no Eureka (EurekaClient)
 Ao contrário do Java, onde a anotação @EnableDiscoveryClient oculta a complexidade, em Go o ciclo de vida REST do Netflix Eureka é gerenciado de forma explícita através de goroutines:
 
