@@ -5,50 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7a34d50d-6b16-4b0a-917a-c8bbd28d7b03" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/auth-service/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/currency-service/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/gateway-service/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/order-service/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/order-service/.dockerignore" beforeDir="false" afterPath="$PROJECT_DIR$/order-service/.dockerignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/.idea/go.imports.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/.idea/product-service.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/.mvn/wrapper/maven-wrapper.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/product-service/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/mvnw.cmd" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/pom.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/ProductServiceApplication.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/clients/CurrencyClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/clients/CurrencyClientFallbackFactory.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/clients/CurrencyResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/controllers/ProductController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/controllers/WsProductController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/dtos/ConversionResult.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/dtos/ErrorResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/dtos/ProductDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/dtos/ProductInDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/dtos/ProductOutDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/entities/ProductEntity.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/infrastructure/exceptions/ExternalServiceException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/infrastructure/exceptions/GlobalExceptionHandler.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/infrastructure/exceptions/ProductNotFoundException.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/repositories/ProductRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/services/CacheService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/services/CurrencyConversionService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/services/ProductService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/java/br/edu/atitus/productservice/services/WsProductService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/application.yaml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/db_migration/V1__CreateTableTbProduct.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/db_migration/V2__PopulateTableTbProduct.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/main/resources/db_migration/V3__AlterIdTypeTbProduct.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/test/java/br/edu/atitus/productservice/ProductServiceApplicationTests.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/product-service/src/test/java/br/edu/atitus/productservice/controllers/ProductControllerTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
