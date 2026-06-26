@@ -55,7 +55,7 @@ func NewHTTPCurrencyClient(discovery *ServiceDiscovery, timeout time.Duration) *
 }
 
 // GetCurrency executa a chamada HTTP protegida por uma política de Retry e Circuit Breaker.
-func (c *HTTPCurrencyClient) GetCurrency(ctx context.Context, source, target string) (*CurrencyResponse, error) {
+func (c *HTTPCurrencyClient) GetCurrency(ctx context.Context, source string, target string) (*CurrencyResponse, error) {
 	var response *CurrencyResponse
 
 	// 1. Aplica a política de Retry (Equivalente ao @Retry(name = "Retry_CurrencyClient_getCurrency"))

@@ -10,17 +10,17 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
-type postgresCurrencyRepository struct {
+type PostgresCurrencyRepository struct {
 	db *sqlx.DB
 }
 
 func NewCurrencyRepository(db *sqlx.DB) CurrencyRepository {
-	return &postgresCurrencyRepository{db: db}
+	return &PostgresCurrencyRepository{db: db}
 }
 
 const selectColumns = `id, source_currency, target_currency, conversion_rate`
 
-func (r *postgresCurrencyRepository) FindByID(ctx context.Context, id int64) (*entities.CurrencyEntity, error) {
+func (r *PostgresCurrencyRepository) FindByID(ctx context.Context, id int64) (*entities.CurrencyEntity, error) {
 	var currency entities.CurrencyEntity
 
 	query := `SELECT ` + selectColumns + ` FROM tb_currency WHERE id = $1`
@@ -36,7 +36,7 @@ func (r *postgresCurrencyRepository) FindByID(ctx context.Context, id int64) (*e
 	return &currency, nil
 }
 
-func (r *postgresCurrencyRepository) FindBySourceCurrencyAndTargetCurrency(ctx context.Context, sourceCurrency string, targetCurrency string) (*entities.CurrencyEntity, error) {
+func (r *PostgresCurrencyRepository) FindBySourceCurrencyAndTargetCurrency(ctx context.Context, sourceCurrency string, targetCurrency string) (*entities.CurrencyEntity, error) {
 	var currency entities.CurrencyEntity
 
 	query := `SELECT ` + selectColumns + `FROM tb_currency WHERE source_currency = $1 AND target_currency = $2`
