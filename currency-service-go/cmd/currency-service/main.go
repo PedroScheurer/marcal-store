@@ -65,7 +65,7 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	eurekaClient := clients.NewEurekaClient(cfg.EurekaURL, "currency-service", cfg.HostName, cfg.ServerPort)
+	eurekaClient := clients.NewEurekaClient(cfg.EurekaURL, cfg.ApplicationName, cfg.HostName, cfg.ServerPort)
 
 	if err := eurekaClient.Register(ctx); err != nil {
 		log.Printf("failed to register on eureka, will retry in background: %v", err)

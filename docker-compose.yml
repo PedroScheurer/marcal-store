@@ -93,16 +93,20 @@ services:
     networks:
       - microservices-net
 
-  currency-service:
-    build: ./currency-service
+  currency-service-go:
+    build: ./currency-service-go
     container_name: currency-service
     ports:
       - "8081:8081"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/db_currency
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
+        SERVER_PORT: "8081"
+        DB_HOST: postgres
+        DB_PORT: "5432"
+        DB_NAME: db_currency
+        POSTGRES_USER: admin
+        POSTGRES_PASSWORD: admin
+        EUREKA_URL: http://discovery-service:8761/eureka
+        HOST_NAME: currency-service
     depends_on:
       discovery-service:
         condition: service_healthy
