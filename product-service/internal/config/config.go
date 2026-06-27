@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"strconv"
 )
 
 // Config concentra as configurações lidas do ambiente, equivalente
@@ -22,6 +23,10 @@ type Config struct {
 
 	EurekaURL string
 	HostName  string
+
+	UploadDir   string
+	MaxVideoMB  int64
+	MaxImageMB  int64
 }
 
 // Load lê a configuração das variáveis de ambiente, com defaults
@@ -41,6 +46,10 @@ func Load() Config {
 
 		HostName:  getEnv("HOST_NAME", "localhost"),
 		EurekaURL: getEnv("EUREKA_URL", "http://localhost:8761/eureka"),
+
+		UploadDir:  getEnv("UPLOAD_DIR", "./uploads"),
+		MaxVideoMB: getEnvInt64("MAX_VIDEO_MB", 100),
+		MaxImageMB: getEnvInt64("MAX_IMAGE_MB", 10),
 	}
 }
 
@@ -66,4 +75,16 @@ func getEnv(key, fallback string) string {
 		return v
 	}
 	return fallback
+}
+
+func getEnvInt64(key string, fallback int64) int64 {
+	raw := os.Getenv(key)
+	if raw == "" {
+		return fallback
+	}
+	v, err := strconv.ParseInt(raw, 10, 64)
+	if err != nil {
+		return fallback
+	}
+	return v
 }

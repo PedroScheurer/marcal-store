@@ -209,6 +209,11 @@ services:
       POSTGRES_PASSWORD: admin
       EUREKA_URL: http://discovery-service:8761/eureka
       HOST_NAME: product-service
+      UPLOAD_DIR: /app/uploads
+      MAX_VIDEO_MB: "100"
+      MAX_IMAGE_MB: "10"
+    volumes:
+      - product_uploads:/app/uploads
     depends_on:
       discovery-service:
         condition: service_healthy
@@ -247,6 +252,7 @@ volumes:
   postgres_product_data:
   postgres_currency_data:
   postgres_order_data:
+  product_uploads:
 
 networks:
   microservices-net:

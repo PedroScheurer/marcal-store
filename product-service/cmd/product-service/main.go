@@ -22,6 +22,7 @@ import (
 	"github.com/PedroScheurer/product-service/internal/infra"
 	"github.com/PedroScheurer/product-service/internal/repositories"
 	"github.com/PedroScheurer/product-service/internal/services"
+	"github.com/PedroScheurer/product-service/internal/storage"
 )
 
 // main é o equivalente Go da classe ProductServiceApplication
@@ -68,9 +69,15 @@ func main() {
 	productService := services.NewProductService(productRepository, currencyConversionService, cfg.ServerPort)
 	wsProductService := services.NewWsProductService(productRepository)
 
+	mediaStorage, err := storage.NewMediaStorage(cfg.UploadDir)
+	if err != nil {
+		log.Fatalf("failed to init media storage: %v", err)
+	}
+
 	// --- Camada de controllers ---
 	productController := controllers.NewProductController(productService)
 	wsProductController := controllers.NewWsProductController(wsProductService)
+	mediaController := controllers.NewMediaController(mediaStorage, cfg.MaxVideoMB, cfg.MaxImageMB)
 
 	router := chi.NewRouter()
 	router.Use(middleware.Logger)
@@ -78,6 +85,7 @@ func main() {
 
 	productController.RegisterRoutes(router)
 	wsProductController.RegisterRoutes(router)
+	mediaController.RegisterRoutes(router)
 
 	router.Route("/management", func(r chi.Router) {
 		r.Handle("/health", infra.NewHealthHandler(db))

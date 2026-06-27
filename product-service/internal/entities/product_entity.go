@@ -10,8 +10,9 @@ type ProductEntity struct {
 	ImageURL    string  `db:"image_url"`
 	VideoURL    string  `db:"video_url"`
 	Description string  `db:"description"`
-	Workload    int     `db:"workload"`
-	Modules     int     `db:"modules"`
-	Price       float64 `db:"price"`
+	Workload     int     `db:"workload"`
+	Modules      int     `db:"modules"`
+	ModuleTitles string  `db:"module_titles"`
+	Price        float64 `db:"price"`
 	Currency    string  `db:"currency"`
 }

@@ -13,6 +13,7 @@ type ProductDTO struct {
 	Description       string   `json:"description"`
 	Workload          int      `json:"workload"`
 	Modules           int      `json:"modules"`
+	ModuleTitles      []string `json:"moduleTitles"`
 	Price             float64  `json:"price"`
 	Currency          string   `json:"currency"`
 	ConvertedPrice    *float64 `json:"convertedPrice"`

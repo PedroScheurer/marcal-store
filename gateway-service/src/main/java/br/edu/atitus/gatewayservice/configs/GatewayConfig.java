@@ -18,6 +18,9 @@ public class GatewayConfig {
                         .path("/ws/products/**")
                         .uri("lb://product-service"))
                 .route(predicateSpec -> predicateSpec
+                        .path("/media/**")
+                        .uri("lb://product-service"))
+                .route(predicateSpec -> predicateSpec
                         .path("/currency/**")
                         .uri("lb://currency-service"))
                 .route(predicateSpec -> predicateSpec

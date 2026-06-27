@@ -32,7 +32,7 @@ var allowedSortColumns = map[string]string{
 	"currency":    "currency",
 }
 
-const selectColumns = `id, name, instructor, image_url, video_url, description, workload, modules, price, currency`
+const selectColumns = `id, name, instructor, image_url, video_url, description, workload, modules, module_titles, price, currency`
 
 func (r *postgresProductRepository) FindByID(ctx context.Context, id int64) (*entities.ProductEntity, error) {
 	var product entities.ProductEntity
@@ -98,13 +98,13 @@ func (r *postgresProductRepository) Save(ctx context.Context, product *entities.
 
 func (r *postgresProductRepository) insert(ctx context.Context, product *entities.ProductEntity) (*entities.ProductEntity, error) {
 	query := `
-		INSERT INTO tb_product (name, instructor, image_url, video_url, description, workload, modules, price, currency)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+		INSERT INTO tb_product (name, instructor, image_url, video_url, description, workload, modules, module_titles, price, currency)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
 		RETURNING id`
 
 	err := r.db.QueryRowContext(ctx, query,
 		product.Name, product.Instructor, product.ImageURL, product.VideoURL,
-		product.Description, product.Workload, product.Modules, product.Price, product.Currency,
+		product.Description, product.Workload, product.Modules, product.ModuleTitles, product.Price, product.Currency,
 	).Scan(&product.ID)
 	if err != nil {
 		return nil, fmt.Errorf("insert product: %w", err)
@@ -117,12 +117,12 @@ func (r *postgresProductRepository) update(ctx context.Context, product *entitie
 	query := `
 		UPDATE tb_product
 		SET name = $1, instructor = $2, image_url = $3, video_url = $4,
-		    description = $5, workload = $6, modules = $7, price = $8, currency = $9
-		WHERE id = $10`
+		    description = $5, workload = $6, modules = $7, module_titles = $8, price = $9, currency = $10
+		WHERE id = $11`
 
 	_, err := r.db.ExecContext(ctx, query,
 		product.Name, product.Instructor, product.ImageURL, product.VideoURL,
-		product.Description, product.Workload, product.Modules, product.Price, product.Currency,
+		product.Description, product.Workload, product.Modules, product.ModuleTitles, product.Price, product.Currency,
 		product.ID,
 	)
 	if err != nil {

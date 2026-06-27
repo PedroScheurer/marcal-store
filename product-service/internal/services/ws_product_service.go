@@ -7,6 +7,7 @@ import (
 	"github.com/PedroScheurer/product-service/internal/apperrors"
 	"github.com/PedroScheurer/product-service/internal/dtos"
 	"github.com/PedroScheurer/product-service/internal/entities"
+	"github.com/PedroScheurer/product-service/internal/modules"
 	"github.com/PedroScheurer/product-service/internal/repositories"
 )
 
@@ -26,15 +27,16 @@ func (s *WsProductService) CreateProduct(ctx context.Context, dto dtos.ProductIn
 	}
 
 	product := &entities.ProductEntity{
-		Name:        dto.Name,
-		Instructor:  dto.Instructor,
-		ImageURL:    dto.ImageURL,
-		VideoURL:    dto.VideoURL,
-		Description: dto.Description,
-		Workload:    dto.Workload,
-		Modules:     dto.Modules,
-		Price:       dto.Price,
-		Currency:    dto.Currency,
+		Name:         dto.Name,
+		Instructor:   dto.Instructor,
+		ImageURL:     dto.ImageURL,
+		VideoURL:     dto.VideoURL,
+		Description:  dto.Description,
+		Workload:     dto.Workload,
+		Modules:      modules.ResolveCount(dto.ModuleTitles, dto.Modules),
+		ModuleTitles: modules.Encode(dto.ModuleTitles),
+		Price:        dto.Price,
+		Currency:     dto.Currency,
 	}
 
 	newProduct, err := s.repository.Save(ctx, product)
@@ -64,7 +66,8 @@ func (s *WsProductService) AlterProduct(ctx context.Context, id int64, dto dtos.
 	product.VideoURL = dto.VideoURL
 	product.Description = dto.Description
 	product.Workload = dto.Workload
-	product.Modules = dto.Modules
+	product.Modules = modules.ResolveCount(dto.ModuleTitles, dto.Modules)
+	product.ModuleTitles = modules.Encode(dto.ModuleTitles)
 	product.Price = dto.Price
 	product.Currency = dto.Currency
 
@@ -98,15 +101,16 @@ func (s *WsProductService) DeleteProduct(ctx context.Context, id int64, userType
 
 func toProductOutDTO(product *entities.ProductEntity) *dtos.ProductOutDTO {
 	return &dtos.ProductOutDTO{
-		ID:          product.ID,
-		Name:        product.Name,
-		Instructor:  product.Instructor,
-		ImageURL:    product.ImageURL,
-		VideoURL:    product.VideoURL,
-		Description: product.Description,
-		Workload:    product.Workload,
-		Modules:     product.Modules,
-		Price:       product.Price,
-		Currency:    product.Currency,
+		ID:           product.ID,
+		Name:         product.Name,
+		Instructor:   product.Instructor,
+		ImageURL:     product.ImageURL,
+		VideoURL:     product.VideoURL,
+		Description:  product.Description,
+		Workload:     product.Workload,
+		Modules:      product.Modules,
+		ModuleTitles: modules.Decode(product.ModuleTitles),
+		Price:        product.Price,
+		Currency:     product.Currency,
 	}
 }

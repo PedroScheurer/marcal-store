@@ -3,7 +3,6 @@ package controllers
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 
 	"github.com/go-chi/chi/v5"
 
@@ -29,46 +28,6 @@ func (c *WsProductController) RegisterRoutes(r chi.Router) {
 		r.Put("/{idProduct}", c.putProduct)
 		r.Delete("/{idProduct}", c.deleteProduct)
 	})
-}
-
-// requiredHeaders é o equivalente aos três @RequestHeader obrigatórios
-// presentes em todos os endpoints do WsProductController Java:
-// X-User-Id, X-User-Email e X-User-Type.
-//
-// userID e userEmail não são usados pela lógica de negócio (assim como no
-// Java original, onde são recebidos mas nunca lidos no corpo dos métodos),
-// mas a presença e validade deles ainda é exigida, replicando o
-// comportamento de "header obrigatório" do Spring (@RequestHeader sem
-// required = false faz o Spring rejeitar a requisição se o header faltar
-// ou não puder ser convertido pro tipo declarado).
-type requiredHeaders struct {
-	userID    int64
-	userEmail string
-	userType  int
-}
-
-func parseRequiredHeaders(r *http.Request) (requiredHeaders, error) {
-	userIDRaw := r.Header.Get("X-User-Id")
-	userEmail := r.Header.Get("X-User-Email")
-	userTypeRaw := r.Header.Get("X-User-Type")
-
-	if userIDRaw == "" || userEmail == "" || userTypeRaw == "" {
-		return requiredHeaders{}, apperrors.NewAuthenticationError(
-			"Headers obrigatórios ausentes: X-User-Id, X-User-Email, X-User-Type",
-		)
-	}
-
-	userID, err := strconv.ParseInt(userIDRaw, 10, 64)
-	if err != nil {
-		return requiredHeaders{}, apperrors.NewAuthenticationError("X-User-Id inválido")
-	}
-
-	userType, err := strconv.Atoi(userTypeRaw)
-	if err != nil {
-		return requiredHeaders{}, apperrors.NewAuthenticationError("X-User-Type inválido")
-	}
-
-	return requiredHeaders{userID: userID, userEmail: userEmail, userType: userType}, nil
 }
 
 // postProduct é o equivalente a WsProductController.postProduct(...).

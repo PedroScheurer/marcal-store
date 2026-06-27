@@ -7,6 +7,7 @@ import (
 	"github.com/PedroScheurer/product-service/internal/apperrors"
 	"github.com/PedroScheurer/product-service/internal/dtos"
 	"github.com/PedroScheurer/product-service/internal/entities"
+	"github.com/PedroScheurer/product-service/internal/modules"
 	"github.com/PedroScheurer/product-service/internal/repositories"
 )
 
@@ -93,6 +94,7 @@ func toProductDTO(product *entities.ProductEntity, conversionResult *dtos.Conver
 		Description:       product.Description,
 		Workload:          product.Workload,
 		Modules:           product.Modules,
+		ModuleTitles:      modules.Decode(product.ModuleTitles),
 		Price:             product.Price,
 		Currency:          product.Currency,
 		ConvertedPrice:    convertedPrice,

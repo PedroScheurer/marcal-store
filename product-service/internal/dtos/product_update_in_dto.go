@@ -7,8 +7,9 @@ type ProductUpdateInDTO struct {
 	ImageURL    string  `json:"imageUrl"`
 	VideoURL    string  `json:"videoUrl"`
 	Description string  `json:"description"`
-	Workload    int     `json:"workload"`
-	Modules     int     `json:"modules"`
-	Price       float64 `json:"price"`
-	Currency    string  `json:"currency"`
+	Workload     int      `json:"workload"`
+	Modules      int      `json:"modules"`
+	ModuleTitles []string `json:"moduleTitles"`
+	Price        float64  `json:"price"`
+	Currency     string   `json:"currency"`
 }

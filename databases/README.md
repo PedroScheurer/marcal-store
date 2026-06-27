@@ -33,6 +33,24 @@ jdbc:postgresql://localhost:5437/db_order   # order
 
 PgAdmin: http://localhost:5050 (`admin@admin.com` / `admin`) — servidores pré-configurados.
 
+## Admin (login no app)
+
+| Campo | Valor |
+|-------|--------|
+| E-mail | `admin@admin.dev` |
+| Senha | `admin123` |
+
+Conta criada pelo Flyway (`V2__PopulateTableTbUser.sql`), com `type = 0` (Admin).
+Após subir o auth-service, a migration `V3__ResetAdminPassword.sql` garante essa senha em bancos já existentes.
+
+Login via gateway:
+
+```bash
+curl -X POST http://localhost:8765/auth/signin \
+  -H "Content-Type: application/json" \
+  -d '{"email":"admin@admin.dev","password":"admin123"}'
+```
+
 ## Testes manuais rápidos
 
 ```bash
