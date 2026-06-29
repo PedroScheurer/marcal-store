@@ -93,7 +93,8 @@ services:
     volumes:
       - ./configs:/app/configs:ro
     environment:
-      SPRING_PROFILES_ACTIVE: native
+      SPRING_PROFILES_ACTIVE: composite
+      CONFIG_GIT_URI: https://github.com/PedroScheurer/marcal-store.git
       CONFIG_SEARCH_LOCATIONS: file:/app/configs
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery-service:8761/eureka
     networks:
@@ -102,8 +103,8 @@ services:
       test: ["CMD-SHELL", "curl -f http://localhost:8888/actuator/health || exit 1"]
       interval: 15s
       timeout: 10s
-      retries: 5
-      start_period: 30s
+      retries: 8
+      start_period: 60s
 
   # ─── DISCOVERY ────────────────────────────────────────────────
 

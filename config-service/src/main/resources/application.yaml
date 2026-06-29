@@ -5,19 +5,29 @@ spring:
   application:
     name: config-service
   profiles:
-    active: native
+    active: ${SPRING_PROFILES_ACTIVE:composite}
   cloud:
     config:
       server:
-        native:
-          search-locations: ${CONFIG_SEARCH_LOCATIONS:file:/app/configs}
-        # Git remoto desabilitado — use profile "git" apenas se precisar do repositório externo.
         git:
-          uri: https://github.com/PedroScheurer/microservices-atitus.git
+          uri: ${CONFIG_GIT_URI:https://github.com/PedroScheurer/marcal-store.git}
           default-label: main
-          search-paths: 'configs'
+          search-paths: configs
           clone-on-start: true
           force-pull: true
+          timeout: 10
+        native:
+          search-locations: ${CONFIG_SEARCH_LOCATIONS:file:/app/configs}
+        composite:
+          - type: git
+            uri: ${CONFIG_GIT_URI:https://github.com/PedroScheurer/marcal-store.git}
+            default-label: main
+            search-paths: configs
+            clone-on-start: true
+            force-pull: true
+            timeout: 10
+          - type: native
+            search-locations: ${CONFIG_SEARCH_LOCATIONS:file:/app/configs}
 
 eureka:
   instance:
@@ -25,7 +35,7 @@ eureka:
     instance-id: ${spring.application.name}:${server.port}
     metadata-map:
       github:
-        repo: PedroScheurer/microservices-atitus
+        repo: PedroScheurer/marcal-store
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
@@ -54,5 +64,5 @@ management:
 info:
   app:
     name: ${spring.application.name}
-    description: [Serviço que gerencia as configurações dos outros serviços]
+    description: [Serviço que gerencia as configurações dos outros serviços via GitHub]
     autor: [Pedro Konig Scheurer]

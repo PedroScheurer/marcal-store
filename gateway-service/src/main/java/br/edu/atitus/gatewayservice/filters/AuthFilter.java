@@ -1,17 +1,22 @@
 package br.edu.atitus.gatewayservice.filters;
 
 import br.edu.atitus.gatewayservice.components.JwtUtil;
+import br.edu.atitus.gatewayservice.infrastructure.exceptions.InvalidTokenException;
+import br.edu.atitus.gatewayservice.infrastructure.exceptions.TokenExpiredException;
 import io.jsonwebtoken.Claims;
 import org.apache.http.HttpHeaders;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @Component
@@ -37,11 +42,13 @@ public class AuthFilter implements GlobalFilter, Ordered {
         }
 
         String jwt = getJwtFromAuthHeader(authHeader);
-        Claims payload = JwtUtil.validateToken(jwt);
-
-        if(payload == null){
-            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return exchange.getResponse().setComplete();
+        Claims payload;
+        try {
+            payload = JwtUtil.validateToken(jwt);
+        } catch (TokenExpiredException e) {
+            return unauthorizedResponse(exchange, "Sessão expirada. Faça login novamente.");
+        } catch (InvalidTokenException e) {
+            return unauthorizedResponse(exchange, "Token inválido. Faça login novamente.");
         }
 
         ServerHttpRequest mutatedRequest = request.mutate()
@@ -68,6 +75,15 @@ public class AuthFilter implements GlobalFilter, Ordered {
     private static boolean hasBearerToken(String authorizationHeader) {
         return authorizationHeader != null
                 && authorizationHeader.startsWith(BEARER_PREFIX);
+    }
+
+    private Mono<Void> unauthorizedResponse(ServerWebExchange exchange, String message) {
+        exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+        exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
+        String body = "{\"message\":\"" + message + "\"}";
+        DataBuffer buffer = exchange.getResponse().bufferFactory()
+                .wrap(body.getBytes(StandardCharsets.UTF_8));
+        return exchange.getResponse().writeWith(Mono.just(buffer));
     }
 
     @Override

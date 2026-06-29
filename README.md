@@ -43,7 +43,7 @@ O parque tecnológico é composto por infraestruturas de suporte e serviços de 
 ### Componentes de Infraestrutura e Suporte
 discovery-service (Porta 8761): Servidor central do Netflix Eureka para registro e descoberta de instâncias.
 
-config-service (Porta 8888): Servidor de configuração centralizado. Usa os arquivos locais em `configs/` (modo native), sem depender do GitHub.
+config-service (Porta 8888): Servidor de configuração centralizado. Busca propriedades no GitHub (`PedroScheurer/marcal-store`, pasta `configs/`), com fallback local montado em `./configs` (profile `composite`).
 
 postgres-auth (Porta 5434): PostgreSQL dedicado ao auth-service (db_user).
 

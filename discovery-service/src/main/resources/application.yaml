@@ -12,7 +12,7 @@ eureka:
   instance:
     metadata-map:
       github:
-        repo: PedroScheurer/microservices-atitus
+        repo: PedroScheurer/marcal-store
 management:
   endpoints:
     web:

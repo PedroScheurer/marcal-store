@@ -31,22 +31,34 @@ public class OrderService {
     }
 
     public OrderEntity createOrder(OrderDTO orderDTO, Long userId) {
+        if (orderDTO == null || orderDTO.items() == null || orderDTO.items().isEmpty()) {
+            throw new IllegalArgumentException("O pedido deve conter ao menos um item.");
+        }
+
         OrderEntity order = new OrderEntity();
         order.setOrderDate(LocalDateTime.now());
         order.setCustomerId(userId);
 
         double totalPrice = 0.0;
         double totalConvertedPrice = 0.0;
-        String targetCurrency = "USD";
+        String targetCurrency = "BRL";
 
         List<OrderItemEntity> items = new ArrayList<>();
 
         for (var itemDTO : orderDTO.items()) {
+            if (itemDTO.productId() == null || itemDTO.quantity() == null || itemDTO.quantity() <= 0) {
+                throw new IllegalArgumentException("Item de pedido inválido: productId e quantity são obrigatórios.");
+            }
+
             OrderItemEntity item = new OrderItemEntity();
             item.setProductId(itemDTO.productId());
             item.setQuantity(itemDTO.quantity());
 
             ProductResponse product = productClient.getProductById(itemDTO.productId());
+            if (product == null || product.price() <= 0) {
+                throw new IllegalArgumentException("Produto não encontrado ou inválido: " + itemDTO.productId());
+            }
+
             item.setPriceAtPurchase(product.price());
             item.setCurrencyAtPurchase(product.currency());
             item.setProduct(product);
@@ -54,7 +66,11 @@ public class OrderService {
             totalPrice += product.price() * itemDTO.quantity();
 
             CurrencyResponse currencyResponse = currencyClient.getCurrency(product.currency(), targetCurrency);
-            double convertedPrice = product.price() * currencyResponse.getConversionRate();
+            double conversionRate = currencyResponse != null ? currencyResponse.conversionRate() : 1.0;
+            if (conversionRate <= 0) {
+                conversionRate = 1.0;
+            }
+            double convertedPrice = product.price() * conversionRate;
             item.setConvertedPriceAtPruchase(convertedPrice);
 
             totalConvertedPrice += convertedPrice * itemDTO.quantity();
@@ -84,7 +100,11 @@ public class OrderService {
                 totalPrice += item.getPriceAtPurchase() * item.getQuantity();
                 
                 CurrencyResponse currencyResponse = currencyClient.getCurrency(item.getCurrencyAtPurchase(), targetCurrency);
-                item.setConvertedPriceAtPruchase(item.getPriceAtPurchase() * currencyResponse.getConversionRate());
+                double conversionRate = currencyResponse != null ? currencyResponse.conversionRate() : 1.0;
+                if (conversionRate <= 0) {
+                    conversionRate = 1.0;
+                }
+                item.setConvertedPriceAtPruchase(item.getPriceAtPurchase() * conversionRate);
                 totalConvertedPrice += item.getConvertedPriceAtPruchase() * item.getQuantity();
             }
             order.setTotalPrice(totalPrice);

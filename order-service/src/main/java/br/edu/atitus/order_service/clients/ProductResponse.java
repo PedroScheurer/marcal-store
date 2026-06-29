@@ -1,14 +1,17 @@
 package br.edu.atitus.order_service.clients;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record ProductResponse(
-	    Long id,
-	    String description,
-	    String brand,
-	    String model,
-	    double price,
-	    String currency,
-	    Integer stock,
-	    String imageURL,
-	    String environment,
-	    double convertedPrice
-	) {}
+        Long id,
+        String name,
+        String instructor,
+        String description,
+        String imageUrl,
+        String videoUrl,
+        double price,
+        String currency,
+        String environment,
+        Double convertedPrice
+) {}
